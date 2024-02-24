@@ -1,13 +1,12 @@
-using JamesFrowen.SimpleWeb;
-
-
 namespace Asteroids
 {
 	public static class Consts
 	{
-		public static TcpConfig TcpConfig = new(false, 5000, 20000);
-
-		public static ushort ServerPort = 12345;
-		public static string ServerAddress = $"ws://127.0.0.1:{ServerPort}";
+		public static int ServerTickMs = 16;
+		public static float ServerDeltaTime = 1f / 1000f * (float)ServerTickMs;
+		public static float PlayerAcceleration = 0.2f;
+		public static float PlayerTopSpeed = 0.2f;
+		public static float PlayerAngularSpeed = 90f;
+		public static float WorldDrag = 0.1f;
 	}
 }

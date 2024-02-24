@@ -1,41 +1,65 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using JamesFrowen.SimpleWeb;
-
+using UnityEngine;
 namespace Asteroids
 {
 	public class Server
 	{
-		private CancellationToken cancel;
-		private SimpleWebServer socket;
-		private ulong tick = 0;
+		private bool isEnabled;
+		private Socket sock;
+		private GameSim game;
 
-		public async void EntryPoint(CancellationToken cancel)
+		public void Enable(Socket socket)
 		{
-			this.cancel = cancel;
+			isEnabled = true;
+			sock = socket;
 
-			socket = new SimpleWebServer(5000, Consts.TcpConfig, ushort.MaxValue, 5000, new());
-			socket.onData += OnSocketData;
-			socket.Start(Consts.ServerPort);
-
-			while (!cancel.IsCancellationRequested)
-				await Tick();
+			game = new();
+			MainLoop();
 		}
 
-		private void OnSocketData(int _, ArraySegment<byte> data)
-		{}
-
-		private async Task Tick()
+		public void Disable()
 		{
-			socket.ProcessMessageQueue();
+			isEnabled = false;
+		}
 
-			var m = new Message();
-			m.Tick = tick;
-			socket.SendOne(1, Message.ToBytes(m));
+		private async void MainLoop()
+		{
+			while (isEnabled)
+			{
+				await Task.Delay(Consts.ServerTickMs);
+				
+				Receive();
+				game.Tick();
+				Send();
+			}	
+		}
 
-			await Task.Delay(16);
-			tick++;
+		private void Send()
+		{
+			lock (sock)
+			{
+				sock.PlayerPosition = game.State.PlayerPosition;
+			}
+		}
+
+		private void Receive()
+		{
+			InputMap? localDelta = null;
+			lock (sock)
+			{
+				if (sock.InputDelta.HasValue)
+				{
+					localDelta = sock.InputDelta.Value;
+					sock.InputDelta = null;
+				}
+			}
+
+			if (localDelta.HasValue)
+			{
+				game.PlayerInput = localDelta.Value;
+			}
 		}
 	}
 }

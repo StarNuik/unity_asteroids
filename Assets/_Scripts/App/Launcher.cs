@@ -1,18 +1,20 @@
-
-using System;
-using System.Threading;
 using UnityEngine;
 
 namespace Asteroids
 {
 	public class Launcher : MonoBehaviour
 	{
-		private CancellationTokenSource cancel = new();
-		
-		public void Awake()
+		private Server server;
+
+		private void Start()
 		{
-			var s = new Server();
-			s.EntryPoint(cancel.Token);
+			var sock = new Socket();
+			Locator.Socket = sock;
+			
+			server = new();
+			server.Enable(sock);
+
+			Locator.GameState = new();
 		}
 	}
 }
