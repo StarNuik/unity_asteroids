@@ -2,24 +2,23 @@ using UnityEngine;
 using InputContext = UnityEngine.InputSystem.InputAction.CallbackContext;
 using Editor = UnityEngine.SerializeField;
 using UnityEngine.InputSystem;
+using Asteroids.Lib;
 
-namespace Asteroids
+namespace Asteroids.Frontend
 {
 	public class InputListener : MonoBehaviour
 	{
 		[Editor] InputActionAsset actionsAsset;
 
-		public InputMap? InputDelta { get; set; }
-		
 		private InputAction primaryFire;
 		private InputAction ultimateFire;
 		private InputAction accelerate;
 		private InputAction rotate;
 
+		private IEventSocket socket => Locator.Socket;
+
 		private void Awake()
 		{
-			Locator.ClientInput = this;
-
 			var actionMap = actionsAsset.FindActionMap("Player");
 			actionMap.actionTriggered += AssembleInputDelta;
 
@@ -33,21 +32,14 @@ namespace Asteroids
 		{
 			var input = new InputMap
 			{
-				PrimaryFire = primaryFire.phase == InputActionPhase.Performed,
-				UltimateFire = ultimateFire.phase == InputActionPhase.Performed,
-				Accelerate = accelerate.phase == InputActionPhase.Performed,
+				PrimaryFire = primaryFire.phase.IsInProgress(),
+				UltimateFire = ultimateFire.phase.IsInProgress(),
+				Accelerate = accelerate.phase.IsInProgress(),
 				Rotate = Mathf.RoundToInt(rotate.ReadValue<float>())
 			};
-			InputDelta = input;
-			// Debug.Log($"New input delta:\n{InputDelta.Value}");
-		}
 
-		private void Update()
-		{
-			if (InputDelta.HasValue)
-			{
-				Debug.Log($"[InputListener.Update()] New input delta:\n{InputDelta.Value}");
-			}
+			socket.Send<InputMap>(input);
+			// Debug.Log($"[InputListener.Update()] input:\n{input}, accel: {accelerate.phase}");
 		}
 	}
 }

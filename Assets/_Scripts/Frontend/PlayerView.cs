@@ -1,16 +1,23 @@
 using UnityEngine;
 using Editor = UnityEngine.SerializeField;
 
-namespace Asteroids
+namespace Asteroids.Frontend
 {
-	public class Player : MonoBehaviour
+	public class PlayerView : MonoBehaviour
 	{
 		[Editor] Transform player;
 		[Editor] Bounds field;
 
+		private GameState state => Locator.GameState;
+
 		private void Update()
 		{
-			var state = Locator.GameState;
+			Position();
+			Rotation();
+		}
+
+		private void Position()
+		{
 			var from = field.min;
 			var size = field.size;
 			var pos = new Vector3(
@@ -19,6 +26,11 @@ namespace Asteroids
 				size.z
 			);
 			player.position = from + pos;
+		}
+
+		private void Rotation()
+		{
+			player.rotation = Quaternion.LookRotation(state.PlayerDirection, Vector3.forward);
 		}
 
 		private void OnDrawGizmos()

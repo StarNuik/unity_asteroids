@@ -1,20 +1,26 @@
+using Asteroids.Frontend;
+using Asteroids.Lib;
 using UnityEngine;
 
-namespace Asteroids
+namespace Asteroids.App
 {
 	public class Launcher : MonoBehaviour
 	{
 		private Server server;
 
-		private void Start()
+		private void Awake()
 		{
-			var sock = new Socket();
-			Locator.Socket = sock;
+			var sock = new ThreadSocket();
 			
 			server = new();
 			server.Enable(sock);
 
-			Locator.GameState = new();
+			Locator.Socket = sock;
+		}
+
+		private void OnDestroy()
+		{
+			server.Disable();
 		}
 	}
 }

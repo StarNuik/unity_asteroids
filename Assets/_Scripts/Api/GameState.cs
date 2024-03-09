@@ -2,12 +2,21 @@ using UnityEngine;
 
 namespace Asteroids
 {
-	public class GameState
+	public struct GameState
 	{
 		public int Tick;
 		
-		public Vector2 PlayerPosition = Vector2.one * 0.5f;
-		public Vector2 PlayerVelocity = Vector2.zero;
-		public Vector2 PlayerDirection = Vector2.up;
+		public Vector2 PlayerPosition;
+		public Vector2 PlayerVelocity;
+		public Vector2 PlayerDirection;
+
+		public GameState(int _ = 0)
+		{
+			PlayerPosition = Vector2.one * 0.5f;
+			PlayerVelocity = Vector2.zero;
+			PlayerDirection = Vector2.right;
+			
+			Tick = 0;
+		}
 	}
 }

@@ -1,22 +1,26 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Asteroids.Backend;
+using Asteroids.Lib;
 using UnityEngine;
 namespace Asteroids
 {
 	public class Server
 	{
 		private bool isEnabled;
-		private Socket sock;
-		private GameSim game;
+		private IEventSocket sock;
 
-		public void Enable(Socket socket)
+		private GameState state = new(1);
+		private PlayerPhysicsService playerPhysics = new();
+		private PlayerInputService playerInput = new();
+
+		public void Enable(IEventSocket socket)
 		{
 			isEnabled = true;
 			sock = socket;
 
-			game = new();
-			MainLoop();
+			GameLoop();
 		}
 
 		public void Disable()
@@ -24,42 +28,23 @@ namespace Asteroids
 			isEnabled = false;
 		}
 
-		private async void MainLoop()
+		private async void GameLoop()
 		{
+			playerInput.Subscribe(sock);
+
 			while (isEnabled)
 			{
 				await Task.Delay(Consts.ServerTickMs);
-				
-				Receive();
-				game.Tick();
-				Send();
+				sock.Poll();
+
+				playerPhysics.Tick(ref state);
+				playerInput.Tick(ref state);
+
+				//TODO remove this hack
+				sock.Send(state);
+
+				state.Tick++;
 			}	
-		}
-
-		private void Send()
-		{
-			lock (sock)
-			{
-				sock.PlayerPosition = game.State.PlayerPosition;
-			}
-		}
-
-		private void Receive()
-		{
-			InputMap? localDelta = null;
-			lock (sock)
-			{
-				if (sock.InputDelta.HasValue)
-				{
-					localDelta = sock.InputDelta.Value;
-					sock.InputDelta = null;
-				}
-			}
-
-			if (localDelta.HasValue)
-			{
-				game.PlayerInput = localDelta.Value;
-			}
 		}
 	}
 }
