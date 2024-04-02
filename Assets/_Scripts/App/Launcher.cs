@@ -10,18 +10,21 @@ namespace Asteroids.App
 
 		private void Awake()
 		{
-			var sock = new ThreadSocket();
+			var sock = new PolledEventStream();
 			
 			server = new();
-			server.Enable(sock);
+			var conn = server.Connect();
 
-			Locator.Socket = sock;
+			Locator.StreamIn = conn.mosi;
+			Locator.StreamOut = conn.miso;
 			Locator.SessionState = new();
+
+			server.IsEnabled = true;
 		}
 
 		private void OnDestroy()
 		{
-			server.Disable();
+			server.IsEnabled = false;
 		}
 	}
 }

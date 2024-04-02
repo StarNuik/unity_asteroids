@@ -4,10 +4,8 @@ namespace Asteroids.Frontend
 {
 	public static class Locator
 	{
-		public static IEventSocket Socket;
+		public static PolledEventStream StreamIn;
+		public static IEventStream StreamOut;
 		public static SessionState SessionState;
-
-		// monos
-		// public static InputListener Input;
 	}
 }

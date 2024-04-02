@@ -3,17 +3,23 @@ using UnityEngine;
 
 namespace Asteroids.Backend
 {
-	public class PlayerInputService
+	public class PlayerControlsService
 	{
-		public void Tick(SessionState state)
+		public static void Sub(IEventStream mainStream)
 		{
+			mainStream.Sub<Tick>(Tick);
+		}
+
+		private static void Tick(Tick tick)
+		{
+			var state = tick.State;
 			var input = state.PlayerInput;
 
 			Direction(state, input);
 			Acceleration(state, input);
 		}
 
-		private void Direction(SessionState state, InputDelta input)
+		private static void Direction(SessionState state, InputDelta input)
 		{
 			if (input.Rotate == 0)
 				return;
@@ -27,7 +33,7 @@ namespace Asteroids.Backend
 			state.PlayerDirection = dir.RotateDegrees(deltaAngle);
 		}
 
-		private void Acceleration(SessionState state, InputDelta input)
+		private static void Acceleration(SessionState state, InputDelta input)
 		{
 			if (!input.Accelerate)
 				return;

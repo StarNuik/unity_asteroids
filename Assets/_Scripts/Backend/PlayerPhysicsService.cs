@@ -1,16 +1,27 @@
+using Asteroids.Lib;
 using UnityEngine;
 
 namespace Asteroids.Backend
 {
 	public class PlayerPhysicsService
 	{
-		public void Tick(SessionState state)
+		public static void Sub(IEventStream mainStream)
 		{
+			mainStream.Sub<Tick>(Tick);
+		}
+		
+		private static void Tick(Tick tick)
+		{
+			var state = tick.State;
 			Velocity(state);
 			Position(state);
+
+			tick.OutStream.Pub<PlayerDelta>(
+				PlayerDelta.ConstructFrom(state)
+			);
 		}
 
-		private void Velocity(SessionState state)
+		private static void Velocity(SessionState state)
 		{
 			var vel = state.PlayerVelocity;
 			var dir = vel.normalized;
@@ -20,7 +31,7 @@ namespace Asteroids.Backend
 			state.PlayerVelocity = dir * next;
 		}
 
-		private void Position(SessionState state)
+		private static void Position(SessionState state)
 		{
 			var vel = state.PlayerVelocity;
 

@@ -9,62 +9,59 @@ namespace Asteroids
 {
 	public class Server
 	{
-		private bool isEnabled;
-		private IEventSocket sock;
+		public bool IsEnabled { get; set; }
 
-		private SessionState state = new(1);
-		private PlayerPhysicsService playerPhysics = new();
-		private PlayerInputService playerInput = new();
+		private PolledEventStream streamIn;
+		private IEventStream streamMain;
+		private IEventStream streamOut;
 
-		public void Enable(IEventSocket socket)
+		private SessionState state;
+		private DeltaService deltaService;
+
+		public Server()
 		{
-			isEnabled = true;
-			sock = socket;
+			streamIn = new();
+			streamMain = new EventStream();
+			streamOut = new PolledEventStream();
+			
+			state = new(1);
+			deltaService = new(state);
 
 			GameLoop();
 		}
 
-		public void Disable()
+		public (IEventStream miso, PolledEventStream mosi) Connect()
 		{
-			isEnabled = false;
+			return (streamIn, streamOut as PolledEventStream);
 		}
 
 		private async void GameLoop()
 		{
 			Subscribe();
 
-			while (isEnabled)
+			while (true)
 			{
-				Poll();
+				streamIn.Poll();
 
-				playerInput.Tick(state);
-				playerPhysics.Tick(state);
-
-				Send();
+				if (IsEnabled)
+				{
+					streamMain.Pub<Tick>(
+						Tick.New(state, streamMain, streamOut)
+					);
+					state.Tick++;
+				}
 
 				await Task.Delay(Consts.ServerTickMs);
-				state.Tick++;
 			}
 		}
 
 		private void Subscribe()
 		{
-			sock.Subscribe<InputDelta>(ApplyInput);
-		}
+			deltaService.Sub(streamIn);
 
-		private void Poll()
-		{
-			sock.Poll<InputDelta>();
-		}
-
-		private void Send()
-		{
-			sock.Send<PlayerDelta>(PlayerDelta.ConstructFrom(state));
-		}
-
-		private void ApplyInput(InputDelta delta)
-		{
-			delta.ApplyTo(state);
+			PlayerControlsService.Sub(streamMain);
+			PlayerPhysicsService.Sub(streamMain);
+			PlayerAttackService.Sub(streamMain);
 		}
 	}
 }

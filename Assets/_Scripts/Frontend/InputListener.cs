@@ -15,7 +15,7 @@ namespace Asteroids.Frontend
 		private InputAction accelerate;
 		private InputAction rotate;
 
-		private SessionState session => Locator.SessionState;
+		private IEventStream outStream => Locator.StreamOut;
 
 		private void Awake()
 		{
@@ -38,7 +38,7 @@ namespace Asteroids.Frontend
 				Rotate = Mathf.RoundToInt(rotate.ReadValue<float>())
 			};
 
-			session.PlayerInput = input;
+			outStream.Pub(input);
 		}
 	}
 }

@@ -1,14 +1,22 @@
+using System;
+using UnityEngine;
+
 namespace Asteroids
 {
 	public static class Consts
 	{
-		public static int ServerTickMs = 16;
-		public static float ServerDeltaTime = 1f / 1000f * (float)ServerTickMs;
+		public const int ServerTickMs = 16;
+		public const float ServerDeltaTime = 1f / 1000f * (float)ServerTickMs;
 
-		public static float WorldDrag = 0.1f;
+		public const float WorldDrag = 0.1f;
 		
-		public static float PlayerAcceleration = 0.4f;
-		public static float PlayerTopSpeed = 0.25f;
-		public static float PlayerAngularSpeed = 180f;
+		public const float PlayerAcceleration = 0.4f;
+		public const float PlayerTopSpeed = 0.25f;
+		public const float PlayerAngularSpeed = 180f;
+		
+		public const int PrimaryAttackCooldown = (int)(0.3f * ticksPerSecond);
+		public const float PrimaryBulletSpeed = 0.4f;
+
+		private const float ticksPerSecond = 1000f / (float)ServerTickMs;
 	}
 }

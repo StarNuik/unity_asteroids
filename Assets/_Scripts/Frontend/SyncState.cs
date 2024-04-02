@@ -8,7 +8,7 @@ namespace Asteroids.Frontend
 {
 	public class SyncState : MonoBehaviour
 	{
-		private IEventSocket sock => Locator.Socket;
+		private PolledEventStream sock => Locator.StreamIn;
 		private SessionState state => Locator.SessionState;
 
 		private void Awake()
@@ -21,24 +21,14 @@ namespace Asteroids.Frontend
 			Poll();
 		}
 
-		private void LateUpdate()
-		{
-			Send();
-		}
-
 		private void Subscribe()
 		{
-			sock.Subscribe<PlayerDelta>(ApplyPlayer);
+			sock.Sub<PlayerDelta>(ApplyPlayer);
 		}
 
 		private void Poll()
 		{
-			sock.Poll<PlayerDelta>();
-		}
-
-		private void Send()
-		{
-			sock.Send<InputDelta>(InputDelta.ConstructFrom(state));
+			sock.Poll();
 		}
 
 		private void ApplyPlayer(PlayerDelta delta)
