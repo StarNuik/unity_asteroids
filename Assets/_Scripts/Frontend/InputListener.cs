@@ -15,7 +15,7 @@ namespace Asteroids.Frontend
 		private InputAction accelerate;
 		private InputAction rotate;
 
-		private IEventSocket socket => Locator.Socket;
+		private SessionState session => Locator.SessionState;
 
 		private void Awake()
 		{
@@ -30,7 +30,7 @@ namespace Asteroids.Frontend
 
 		private void AssembleInputDelta(InputContext ctx)
 		{
-			var input = new InputMap
+			var input = new InputDelta
 			{
 				PrimaryFire = primaryFire.phase.IsInProgress(),
 				UltimateFire = ultimateFire.phase.IsInProgress(),
@@ -38,8 +38,7 @@ namespace Asteroids.Frontend
 				Rotate = Mathf.RoundToInt(rotate.ReadValue<float>())
 			};
 
-			socket.Send<InputMap>(input);
-			// Debug.Log($"[InputListener.Update()] input:\n{input}, accel: {accelerate.phase}");
+			session.PlayerInput = input;
 		}
 	}
 }

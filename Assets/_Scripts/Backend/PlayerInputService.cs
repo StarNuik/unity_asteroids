@@ -5,42 +5,31 @@ namespace Asteroids.Backend
 {
 	public class PlayerInputService
 	{
-		// should I store this in the GameState as well?
-		private InputMap currentInput;
-
-		public void Subscribe(IEventSocket sock)
+		public void Tick(SessionState state)
 		{
-			sock.Subscribe<InputMap>(SaveInput);
+			var input = state.PlayerInput;
+
+			Direction(state, input);
+			Acceleration(state, input);
 		}
 
-		public void Tick(ref SessionState state)
+		private void Direction(SessionState state, InputDelta input)
 		{
-			Direction(ref state);
-			Acceleration(ref state);
-		}
-
-		private void SaveInput(InputMap nextInput)
-		{
-			currentInput = nextInput;
-		}
-
-		private void Direction(ref SessionState state)
-		{
-			if (currentInput.Rotate == 0)
+			if (input.Rotate == 0)
 				return;
 			
 			var dir = state.PlayerDirection;
 			var deltaAngle =
 				Consts.PlayerAngularSpeed
-				* currentInput.Rotate
+				* input.Rotate
 				* Consts.ServerDeltaTime;
 			
 			state.PlayerDirection = dir.RotateDegrees(deltaAngle);
 		}
 
-		private void Acceleration(ref SessionState state)
+		private void Acceleration(SessionState state, InputDelta input)
 		{
-			if (!currentInput.Accelerate)
+			if (!input.Accelerate)
 				return;
 			
 			var vel = state.PlayerVelocity;

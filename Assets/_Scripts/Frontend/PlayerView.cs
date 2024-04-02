@@ -8,7 +8,7 @@ namespace Asteroids.Frontend
 		[Editor] Transform player;
 		[Editor] Bounds field;
 
-		private SessionState state => Locator.GameState;
+		private SessionState state => Locator.SessionState;
 
 		private void Update()
 		{

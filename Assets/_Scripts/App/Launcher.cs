@@ -16,6 +16,7 @@ namespace Asteroids.App
 			server.Enable(sock);
 
 			Locator.Socket = sock;
+			Locator.SessionState = new();
 		}
 
 		private void OnDestroy()

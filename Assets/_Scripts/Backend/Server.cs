@@ -31,22 +31,40 @@ namespace Asteroids
 
 		private async void GameLoop()
 		{
-			playerInput.Subscribe(sock);
+			Subscribe();
 
 			while (isEnabled)
 			{
+				Poll();
+
+				playerInput.Tick(state);
+				playerPhysics.Tick(state);
+
+				Send();
+
 				await Task.Delay(Consts.ServerTickMs);
-
-				sock.Poll<InputMap>();
-
-				playerInput.Tick(ref state);
-				playerPhysics.Tick(ref state);
-
-				//TODO remove this hack
-				sock.Send(state);
-
 				state.Tick++;
-			}	
+			}
+		}
+
+		private void Subscribe()
+		{
+			sock.Subscribe<InputDelta>(ApplyInput);
+		}
+
+		private void Poll()
+		{
+			sock.Poll<InputDelta>();
+		}
+
+		private void Send()
+		{
+			sock.Send<PlayerDelta>(PlayerDelta.ConstructFrom(state));
+		}
+
+		private void ApplyInput(InputDelta delta)
+		{
+			delta.ApplyTo(state);
 		}
 	}
 }
