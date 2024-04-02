@@ -8,10 +8,10 @@ namespace Asteroids.Frontend
 	{
 		private void Awake()
 		{
-			Locator.Socket.Subscribe<GameState>(SaveState);
+			Locator.Socket.Subscribe<SessionState>(SaveState);
 		}
 
-		private void SaveState(GameState next)
+		private void SaveState(SessionState next)
 		{
 			Locator.GameState = next;
 			// Debug.Log($"[ SyncState.SaveState() ] Receieved new state, pp: {next.PlayerPosition}, pv: {next.PlayerVelocity}, pd: {next.PlayerDirection}");
@@ -19,7 +19,7 @@ namespace Asteroids.Frontend
 
 		private void Update()
 		{
-			Locator.Socket.Poll();
+			Locator.Socket.Poll<SessionState>();
 		}
 	}
 }

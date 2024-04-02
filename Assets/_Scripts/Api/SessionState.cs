@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Asteroids
 {
-	public struct GameState
+	public struct SessionState
 	{
 		public int Tick;
 		
@@ -10,7 +10,7 @@ namespace Asteroids
 		public Vector2 PlayerVelocity;
 		public Vector2 PlayerDirection;
 
-		public GameState(int _ = 0)
+		public SessionState(int _ = 0)
 		{
 			PlayerPosition = Vector2.one * 0.5f;
 			PlayerVelocity = Vector2.zero;

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Asteroids.Backend;
 using Asteroids.Lib;
 using UnityEngine;
+
 namespace Asteroids
 {
 	public class Server
@@ -11,7 +12,7 @@ namespace Asteroids
 		private bool isEnabled;
 		private IEventSocket sock;
 
-		private GameState state = new(1);
+		private SessionState state = new(1);
 		private PlayerPhysicsService playerPhysics = new();
 		private PlayerInputService playerInput = new();
 
@@ -35,10 +36,11 @@ namespace Asteroids
 			while (isEnabled)
 			{
 				await Task.Delay(Consts.ServerTickMs);
-				sock.Poll();
 
-				playerPhysics.Tick(ref state);
+				sock.Poll<InputMap>();
+
 				playerInput.Tick(ref state);
+				playerPhysics.Tick(ref state);
 
 				//TODO remove this hack
 				sock.Send(state);

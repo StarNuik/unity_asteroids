@@ -13,7 +13,7 @@ namespace Asteroids.Backend
 			sock.Subscribe<InputMap>(SaveInput);
 		}
 
-		public void Tick(ref GameState state)
+		public void Tick(ref SessionState state)
 		{
 			Direction(ref state);
 			Acceleration(ref state);
@@ -24,7 +24,7 @@ namespace Asteroids.Backend
 			currentInput = nextInput;
 		}
 
-		private void Direction(ref GameState state)
+		private void Direction(ref SessionState state)
 		{
 			if (currentInput.Rotate == 0)
 				return;
@@ -38,7 +38,7 @@ namespace Asteroids.Backend
 			state.PlayerDirection = dir.RotateDegrees(deltaAngle);
 		}
 
-		private void Acceleration(ref GameState state)
+		private void Acceleration(ref SessionState state)
 		{
 			if (!currentInput.Accelerate)
 				return;

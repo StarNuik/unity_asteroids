@@ -4,13 +4,13 @@ namespace Asteroids.Backend
 {
 	public class PlayerPhysicsService
 	{
-		public void Tick(ref GameState state)
+		public void Tick(ref SessionState state)
 		{
 			Velocity(ref state);
 			Position(ref state);
 		}
 
-		private void Velocity(ref GameState state)
+		private void Velocity(ref SessionState state)
 		{
 			var vel = state.PlayerVelocity;
 			var dir = vel.normalized;
@@ -20,7 +20,7 @@ namespace Asteroids.Backend
 			state.PlayerVelocity = dir * next;
 		}
 
-		private void Position(ref GameState state)
+		private void Position(ref SessionState state)
 		{
 			var vel = state.PlayerVelocity;
 

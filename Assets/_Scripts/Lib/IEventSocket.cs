@@ -13,6 +13,7 @@ namespace Asteroids.Lib
 		public void Send<T>(T payload)
 			where T : struct;
 
-		public void Poll();
+		public void Poll<T>()
+			where T : struct;
 	}
 }

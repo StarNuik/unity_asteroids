@@ -13,8 +13,40 @@ namespace Asteroids.Lib
 		public void Subscribe<T>(Action<T> listener)
 			where T : struct
 		{
-			var t = typeof(T);
+			var chan = GetChannelSafe<T>();
+			lock (chan)
+			{
+				chan.Listeners.Add(listener);
+			}
+		}
+
+		public void Send<T>(T payload)
+			where T : struct
+		{
+			var chan = GetChannelSafe<T>();
+
+			lock (chan)
+			{
+				chan.Messages.Add(payload);
+			}
+		}
+
+		public void Poll<T>()
+			where T : struct
+		{
+			var chan = GetChannelSafe<T>();
+
+			lock (chan)
+			{
+				chan.PollSelf();
+			}
+		}
+
+		private Channel<T> GetChannelSafe<T>()
+			where T : struct
+		{
 			Channel<T> chan;
+			var t = typeof(T);
 
 			lock (channels)
 			{
@@ -27,39 +59,9 @@ namespace Asteroids.Lib
 				{
 					chan = channels[t].AsStrict<T>();
 				}
-
-				chan.Listeners.Add(listener);
 			}
-		}
 
-		public void Send<T>(T payload)
-			where T : struct
-		{
-			var t = typeof(T);
-
-			lock (channels)
-			{
-				if (!channels.ContainsKey(t))
-					return;
-				
-				var chan = channels[t].AsStrict<T>();
-				chan.Payload = payload;
-			}
-		}
-
-		// this one is dangerous
-		// bcs any of the server and the client
-		// consume ALL of the events
-		public void Poll()
-		{
-			// some nasty locking could occur here
-			lock (channels)
-			{
-				foreach (var (t, iChan) in channels)
-				{
-					iChan.PollSelf();
-				}
-			}
+			return chan;
 		}
 
 		private interface IChannel
@@ -73,7 +75,7 @@ namespace Asteroids.Lib
 		private class Channel<T> : IChannel
 			where T : struct
 		{
-			public T? Payload;
+			public List<T> Messages = new();
 			public List<Action<T>> Listeners { get; private set; } = new();
 
 			public Channel<TTarget> AsStrict<TTarget>()
@@ -86,15 +88,15 @@ namespace Asteroids.Lib
 
 			public void PollSelf()
 			{
-				if (!Payload.HasValue)
-					return;
-				
-				foreach (var listener in Listeners)
+				foreach (var message in Messages)
 				{
-					listener(Payload.Value);
+					foreach (var listener in Listeners)
+					{
+						listener(message);
+					}
 				}
 
-				Payload = null;
+				Messages.Clear();
 			}
 		}
 	}
