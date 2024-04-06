@@ -1,0 +1,8 @@
+using UnityEngine;
+using Editor = UnityEngine.SerializeField;
+
+	#ROOTNAMESPACEBEGIN#
+public class #SCRIPTNAME# : MonoBehaviour
+{
+}
+#ROOTNAMESPACEEND#
