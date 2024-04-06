@@ -6,11 +6,12 @@ namespace Asteroids.Frontend
 	public class PlayerView : MonoBehaviour
 	{
 		[Editor] Transform player;
-		[Editor] Bounds field;
+		
+		private FieldService field => Locator.Field;
+		private ISubscribable server => Locator.ServerIn;
 
 		private void Awake()
 		{
-			var server = Locator.ServerIn;
 			server.Sub<PlayerDelta>(PlayerTick);
 		}
 
@@ -22,25 +23,12 @@ namespace Asteroids.Frontend
 
 		private void Position(PlayerDelta msg)
 		{
-			var from = field.min;
-			var size = field.size;
-			var pos = new Vector3(
-				size.x * msg.Position.x,
-				size.y * msg.Position.y,
-				size.z
-			);
-			player.position = from + pos;
+			player.position = field.ToWorld(msg.Position);
 		}
 
 		private void Rotation(PlayerDelta msg)
 		{
 			player.rotation = Quaternion.LookRotation(msg.Direction, Vector3.forward);
-		}
-
-		private void OnDrawGizmos()
-		{
-			Gizmos.color = Color.green;
-			Gizmos.DrawWireCube(field.center, field.size);
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace Asteroids
 		public const float PlayerAngularSpeed = 180f;
 		
 		public const int PrimaryAttackCooldown = (int)(0.3f * ticksPerSecond);
-		public const float PrimaryBulletSpeed = 0.4f;
+		public const float PrimaryBulletSpeed = 2.0f;
 
 		private const float ticksPerSecond = 1000f / (float)ServerTickMs;
 	}

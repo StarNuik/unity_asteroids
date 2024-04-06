@@ -6,5 +6,7 @@ namespace Asteroids.Frontend
 	{
 		public static ISubscribable ServerIn;
 		public static IPublisher ClientOut;
+
+		public static FieldService Field;
 	}
 }
