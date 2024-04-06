@@ -4,19 +4,22 @@ using Asteroids;
 using Asteroids.Lib;
 using UnityEngine;
 
-public class Tick
+namespace Asteroids
 {
-	public SessionState State { get; private set; }
-	public IEventStream ServerStream { get; private set; }
-	public IEventStream OutStream { get; private set; }
-
-	public static Tick New(SessionState state, IEventStream serverStream, IEventStream outStream)
+	public class Tick
 	{
-		return new()
+		public SessionState State { get; private set; }
+		public IPublisher ServerStream { get; private set; }
+		public IPublisher ClientStream { get; private set; }
+
+		public static Tick New(SessionState state, IPublisher server, IPublisher @out)
 		{
-			State = state,
-			ServerStream = serverStream,
-			OutStream = outStream,
-		};
+			return new()
+			{
+				State = state,
+				ServerStream = server,
+				ClientStream = @out,
+			};
+		}
 	}
 }

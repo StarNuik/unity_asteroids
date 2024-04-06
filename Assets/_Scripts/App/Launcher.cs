@@ -4,9 +4,12 @@ using UnityEngine;
 
 namespace Asteroids.App
 {
+	//todo remove this hack
+	[DefaultExecutionOrder(-999)]
 	public class Launcher : MonoBehaviour
 	{
 		private Server server;
+		private PolledEventStream serverIn;
 
 		private void Awake()
 		{
@@ -15,11 +18,18 @@ namespace Asteroids.App
 			server = new();
 			var conn = server.Connect();
 
-			Locator.StreamIn = conn.mosi;
-			Locator.StreamOut = conn.miso;
-			Locator.SessionState = new();
+			Locator.ServerIn = conn.mosi;
+			Locator.ClientOut = conn.miso;
+
+			serverIn = conn.mosi;
+			// Locator.SessionState = new();
 
 			server.IsEnabled = true;
+		}
+
+		private void Update()
+		{
+			serverIn.Poll();
 		}
 
 		private void OnDestroy()

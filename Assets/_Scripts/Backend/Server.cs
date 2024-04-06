@@ -30,7 +30,7 @@ namespace Asteroids
 			GameLoop();
 		}
 
-		public (IEventStream miso, PolledEventStream mosi) Connect()
+		public (IPublisher miso, PolledEventStream mosi) Connect()
 		{
 			return (streamIn, streamOut as PolledEventStream);
 		}
@@ -62,6 +62,8 @@ namespace Asteroids
 			PlayerControlsService.Sub(streamMain);
 			PlayerPhysicsService.Sub(streamMain);
 			PlayerAttackService.Sub(streamMain);
+			EntityClampService.Sub(streamMain);
+			BulletFactoryService.Sub(streamMain);
 		}
 	}
 }

@@ -5,9 +5,8 @@ using UnityEngine;
 
 namespace Asteroids.Lib
 {
-	public interface IEventStream
+	public interface IEventStream : IPublisher, ISubscribable
 	{
-		public void Sub<T>(Action<T> listener);
-		public void Pub<T>(T payload);
+		//
 	}
 }

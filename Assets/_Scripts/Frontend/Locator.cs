@@ -4,8 +4,7 @@ namespace Asteroids.Frontend
 {
 	public static class Locator
 	{
-		public static PolledEventStream StreamIn;
-		public static IEventStream StreamOut;
-		public static SessionState SessionState;
+		public static ISubscribable ServerIn;
+		public static IPublisher ClientOut;
 	}
 }

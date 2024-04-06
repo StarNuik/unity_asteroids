@@ -16,7 +16,7 @@ namespace Asteroids.Backend
 			Velocity(state);
 			Position(state);
 
-			tick.OutStream.Pub<PlayerDelta>(
+			tick.ClientStream.Pub<PlayerDelta>(
 				PlayerDelta.ConstructFrom(state)
 			);
 		}

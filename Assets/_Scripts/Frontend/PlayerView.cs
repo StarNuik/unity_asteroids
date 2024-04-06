@@ -8,29 +8,33 @@ namespace Asteroids.Frontend
 		[Editor] Transform player;
 		[Editor] Bounds field;
 
-		private SessionState state => Locator.SessionState;
-
-		private void Update()
+		private void Awake()
 		{
-			Position();
-			Rotation();
+			var server = Locator.ServerIn;
+			server.Sub<PlayerDelta>(PlayerTick);
 		}
 
-		private void Position()
+		private void PlayerTick(PlayerDelta msg)
+		{
+			Position(msg);
+			Rotation(msg);
+		}
+
+		private void Position(PlayerDelta msg)
 		{
 			var from = field.min;
 			var size = field.size;
 			var pos = new Vector3(
-				size.x * state.PlayerPosition.x,
-				size.y * state.PlayerPosition.y,
+				size.x * msg.Position.x,
+				size.y * msg.Position.y,
 				size.z
 			);
 			player.position = from + pos;
 		}
 
-		private void Rotation()
+		private void Rotation(PlayerDelta msg)
 		{
-			player.rotation = Quaternion.LookRotation(state.PlayerDirection, Vector3.forward);
+			player.rotation = Quaternion.LookRotation(msg.Direction, Vector3.forward);
 		}
 
 		private void OnDrawGizmos()

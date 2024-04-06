@@ -11,7 +11,7 @@ namespace Asteroids
 		public const float WorldDrag = 0.1f;
 		
 		public const float PlayerAcceleration = 0.4f;
-		public const float PlayerTopSpeed = 0.25f;
+		public const float PlayerTopSpeed = 0.5f;
 		public const float PlayerAngularSpeed = 180f;
 		
 		public const int PrimaryAttackCooldown = (int)(0.3f * ticksPerSecond);

@@ -15,7 +15,7 @@ namespace Asteroids.Frontend
 		private InputAction accelerate;
 		private InputAction rotate;
 
-		private IEventStream outStream => Locator.StreamOut;
+		private IPublisher outStream => Locator.ClientOut;
 
 		private void Awake()
 		{

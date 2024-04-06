@@ -7,8 +7,6 @@ namespace Asteroids
 	{
 		public int Tick;
 
-		public List<int> Entities;
-
 		public InputDelta PlayerInput;
 		
 		public Vector2 PlayerPosition;

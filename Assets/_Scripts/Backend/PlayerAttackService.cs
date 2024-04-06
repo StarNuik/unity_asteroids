@@ -15,14 +15,16 @@ namespace Asteroids
 
 		private static void Tick(Tick tick)
 		{
-			var state = tick.State;
-			var input = state.PlayerInput;
-
-			PrimaryFire(state, input);
+			PrimaryFire(tick);
 		}
 
-		private static void PrimaryFire(SessionState state, InputDelta input)
+		private static void PrimaryFire(Tick tick)
 		{
+			//todo this is *not right*
+			var state = tick.State;
+			var input = state.PlayerInput;
+			var server = tick.ServerStream;
+
 			if (!input.PrimaryFire)
 				return;
 			
@@ -31,15 +33,7 @@ namespace Asteroids
 				return;
 			
 			state.LastPrimaryFire = state.Tick;
-			// state.Bullets.Add();
+			server.Pub<CreateBullet>(CreateBullet.From(tick));
 		}
-
-		// private static Bullet BulletFactory(SessionState state)
-		// {
-		// 	var b = new Bullet();
-		// 	b.Position = state.PlayerPosition;
-		// 	b.Velocity = state.PlayerDirection * Consts.PrimaryBulletSpeed;
-		// 	return b;
-		// }
 	}
 }
