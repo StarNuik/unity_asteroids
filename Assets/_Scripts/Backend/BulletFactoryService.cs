@@ -15,10 +15,12 @@ namespace Asteroids
 			var state = msg.Tick.State;
 			var client = msg.Tick.ClientStream;
 
-			var b = new Bullet();
-			b.Position = state.PlayerPosition;
-			b.Velocity = state.PlayerDirection * Consts.PrimaryBulletSpeed;
-			
+			var b = new Bullet
+			{
+				Position = state.PlayerPosition,
+				Velocity = state.PlayerDirection * Consts.PrimaryBulletSpeed,
+			};
+
 			state.Bullets.Add(b);
 			client.Pub<BulletCreated>(new() { Bullet = b, });
 		}

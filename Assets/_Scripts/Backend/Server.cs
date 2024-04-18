@@ -24,7 +24,7 @@ namespace Asteroids
 			streamMain = new EventStream();
 			streamOut = new PolledEventStream();
 			
-			state = new(1);
+			state = new();
 			deltaService = new(state);
 
 			GameLoop();
@@ -64,6 +64,7 @@ namespace Asteroids
 			PlayerAttackService.Sub(streamMain);
 			EntityClampService.Sub(streamMain);
 			BulletFactoryService.Sub(streamMain);
+			AsteroidFactoryService.Sub(streamMain);
 		}
 	}
 }
