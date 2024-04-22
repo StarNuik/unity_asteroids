@@ -12,6 +12,10 @@ namespace Asteroids
 		private BulletFactoryService bulletFactory = new();
 		private AsteroidFactoryService asteroidFactory = new();
 		private SyncService sync = new();
+		private PlayerControlsService playerControls = new();
+		private PlayerPhysicsService playerPhysics = new();
+		private PlayerAttackService playerAttack = new();
+		private EntityClampService entityClamp = new();
 
 		public void Setup()
 		{
@@ -23,10 +27,10 @@ namespace Asteroids
 			Main.Sub<CreateBullet>(bulletFactory.CreateBullet);
 			
 			Main.Sub<Tick>(asteroidFactory.Tick);
-			PlayerControlsService.Sub(Main);
-			PlayerPhysicsService.Sub(Main);
-			PlayerAttackService.Sub(Main);
-			EntityClampService.Sub(Main);
+			Main.Sub<Tick>(playerControls.Tick);
+			Main.Sub<Tick>(playerPhysics.Tick);
+			Main.Sub<Tick>(playerAttack.Tick);
+			Main.Sub<Tick>(entityClamp.WarpEntities);
 
 			Main.Sub<Sync>(sync.PubUpdates);
 		}
@@ -34,7 +38,7 @@ namespace Asteroids
 		private void InjectChildren()
 		{
 			var services = new List<Service>() {
-				sync, deltaService, entityRegistry, entityFactory, bulletFactory,
+				entityClamp, playerAttack, playerPhysics, playerControls, sync, deltaService, entityRegistry, entityFactory, bulletFactory,
 			};
 
 			services.ForEach(s => s.Inject(State, Input, Main, Client));

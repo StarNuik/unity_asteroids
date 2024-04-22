@@ -50,9 +50,7 @@ namespace Asteroids
 
 				if (IsEnabled)
 				{
-					streamMain.Pub(
-						Tick.New(state, streamMain, streamOut)
-					);
+					streamMain.Pub(new Tick());
 					//todo: ponder on whether a better solution exists
 					streamMain.Pub(new Sync());
 					state.Tick++;

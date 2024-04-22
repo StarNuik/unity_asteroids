@@ -3,46 +3,40 @@ using UnityEngine;
 
 namespace Asteroids.Backend
 {
-	public class PlayerControlsService
+	public class PlayerControlsService : Service
 	{
-		public static void Sub(IEventStream mainStream)
+		public void Tick(Tick tick)
 		{
-			mainStream.Sub<Tick>(Tick);
+			var input = State.PlayerInput;
+
+			Direction(input);
+			Acceleration(input);
 		}
 
-		private static void Tick(Tick tick)
-		{
-			var state = tick.State;
-			var input = state.PlayerInput;
-
-			Direction(state, input);
-			Acceleration(state, input);
-		}
-
-		private static void Direction(SessionState state, InputDelta input)
+		private void Direction(InputDelta input)
 		{
 			if (input.Rotate == 0)
 				return;
 			
-			var dir = state.PlayerDirection;
+			var dir = State.PlayerDirection;
 			var deltaAngle =
 				Consts.PlayerAngularSpeed
 				* input.Rotate
 				* Consts.ServerDeltaTime;
 			
-			state.PlayerDirection = dir.RotateDegrees(deltaAngle);
+			State.PlayerDirection = dir.RotateDegrees(deltaAngle);
 		}
 
-		private static void Acceleration(SessionState state, InputDelta input)
+		private void Acceleration(InputDelta input)
 		{
 			if (!input.Accelerate)
 				return;
 			
-			var vel = state.PlayerVelocity;
-			var dir = state.PlayerDirection;
+			var vel = State.PlayerVelocity;
+			var dir = State.PlayerDirection;
 			var add = dir * Consts.PlayerAcceleration * Consts.ServerDeltaTime;
 
-			state.PlayerVelocity = Vector2.ClampMagnitude(vel + add, Consts.PlayerTopSpeed);
+			State.PlayerVelocity = Vector2.ClampMagnitude(vel + add, Consts.PlayerTopSpeed);
 		}
 	}
 }

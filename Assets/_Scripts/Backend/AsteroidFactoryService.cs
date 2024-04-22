@@ -16,19 +16,16 @@ namespace Asteroids
 		
 		public void Tick(Tick tick)
 		{
-			var state = tick.State;
-			var client = tick.ClientStream;
-
-			if (state.Tick < state.NextAsteroid)
+			if (State.Tick < State.NextAsteroid)
 				return;
 			
-			state.NextAsteroid = state.Tick + Random.Range(Consts.AsteroidsTimerRange.x, Consts.AsteroidsTimerRange.y);
+			State.NextAsteroid = State.Tick + Random.Range(Consts.AsteroidsTimerRange.x, Consts.AsteroidsTimerRange.y);
 
 			var asteroid = entityFactory.NewEntity<Asteroid>();
-			asteroid.Position = state.PlayerPosition;
-			asteroid.Velocity = state.PlayerDirection * Consts.PrimaryBulletSpeed;
+			asteroid.Position = State.PlayerPosition;
+			asteroid.Velocity = State.PlayerDirection * Consts.PrimaryBulletSpeed;
 
-			client.Pub<CreatedAsteroid>(new() { Asteroid = asteroid, });
+			Client.Pub<CreatedAsteroid>(new() { Asteroid = asteroid, });
 		}
 	}
 }

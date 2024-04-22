@@ -2,38 +2,31 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Asteroids.Lib;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Asteroids
 {
-	public class PlayerAttackService
+	public class PlayerAttackService : Service
 	{
-		public static void Sub(IEventStream mainStream)
+		public void Tick(Tick tick)
 		{
-			mainStream.Sub<Tick>(Tick);
+			PrimaryFire();
 		}
 
-		private static void Tick(Tick tick)
+		private void PrimaryFire()
 		{
-			PrimaryFire(tick);
-		}
-
-		private static void PrimaryFire(Tick tick)
-		{
-			//todo this is *not right*
-			var state = tick.State;
-			var input = state.PlayerInput;
-			var server = tick.ServerStream;
+			var input = State.PlayerInput;
 
 			if (!input.PrimaryFire)
 				return;
 			
-			var cooled = state.Tick - state.LastPrimaryFire;
+			var cooled = State.Tick - State.LastPrimaryFire;
 			if (cooled < Consts.PrimaryAttackCooldown)
 				return;
 			
-			state.LastPrimaryFire = state.Tick;
-			server.Pub<CreateBullet>(CreateBullet.From(tick));
+			State.LastPrimaryFire = State.Tick;
+			Main.Pub(new CreateBullet());
 		}
 	}
 }

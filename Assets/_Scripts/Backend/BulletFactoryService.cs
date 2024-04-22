@@ -12,7 +12,7 @@ namespace Asteroids
 			this.entityFactory = entityFactory;
 		}
 
-		public void CreateBullet(CreateBullet msg)
+		public void CreateBullet(CreateBullet _)
 		{
 			var bullet = entityFactory.NewEntity<Bullet>();
 			bullet.Position = State.PlayerPosition;

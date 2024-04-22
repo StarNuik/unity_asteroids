@@ -3,39 +3,29 @@ using UnityEngine;
 
 namespace Asteroids.Backend
 {
-	public class PlayerPhysicsService
+	public class PlayerPhysicsService : Service
 	{
-		public static void Sub(IEventStream mainStream)
+		public void Tick(Tick tick)
 		{
-			mainStream.Sub<Tick>(Tick);
-		}
-		
-		private static void Tick(Tick tick)
-		{
-			var state = tick.State;
-			Velocity(state);
-			Position(state);
-
-			tick.ClientStream.Pub<PlayerDelta>(
-				PlayerDelta.ConstructFrom(state)
-			);
+			Velocity();
+			Position();
 		}
 
-		private static void Velocity(SessionState state)
+		private void Velocity()
 		{
-			var vel = state.PlayerVelocity;
+			var vel = State.PlayerVelocity;
 			var dir = vel.normalized;
 			var len = vel.magnitude;
 
 			var next = Mathf.Max(0f, len - Consts.WorldDrag * Consts.ServerDeltaTime);
-			state.PlayerVelocity = dir * next;
+			State.PlayerVelocity = dir * next;
 		}
 
-		private static void Position(SessionState state)
+		private void Position()
 		{
-			var vel = state.PlayerVelocity;
+			var vel = State.PlayerVelocity;
 
-			state.PlayerPosition += vel * Consts.ServerDeltaTime;
+			State.PlayerPosition += vel * Consts.ServerDeltaTime;
 		}
 	}
 }

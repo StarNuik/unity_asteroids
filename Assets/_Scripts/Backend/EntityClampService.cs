@@ -4,22 +4,15 @@ using UnityEngine;
 
 namespace Asteroids
 {
-	public class EntityClampService
+	public class EntityClampService : Service
 	{
-		public static void Sub(IEventStream server)
+		public void WarpEntities(Tick _)
 		{
-			server.Sub<Tick>(WarpEntities);
-		}
-
-		private static void WarpEntities(Tick tick)
-		{
-			var state = tick.State;
-			
 			//todo do this for all entities
-			var playerPos = state.PlayerPosition;
+			var playerPos = State.PlayerPosition;
 			playerPos.x = Mathf.Repeat(playerPos.x, 1f);
 			playerPos.y = Mathf.Repeat(playerPos.y, 1f);
-			state.PlayerPosition = playerPos; 
+			State.PlayerPosition = playerPos; 
 		}
 	}
 }
