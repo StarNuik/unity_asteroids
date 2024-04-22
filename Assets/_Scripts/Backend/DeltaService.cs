@@ -6,15 +6,8 @@ using UnityEngine;
 
 namespace Asteroids
 {
-	public class DeltaService
+	public class DeltaService : Service
 	{
-		private SessionState state;
-
-		public DeltaService(SessionState state)
-		{
-			this.state = state;
-		}
-
 		public void Sub(IEventStream inStream)
 		{
 			inStream.Sub<InputDelta>(ApplyInput);
@@ -22,7 +15,7 @@ namespace Asteroids
 
 		public void ApplyInput(InputDelta delta)
 		{
-			delta.ApplyTo(state);
+			delta.ApplyTo(State);
 		}
 	}
 }

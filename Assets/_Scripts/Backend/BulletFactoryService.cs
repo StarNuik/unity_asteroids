@@ -3,26 +3,22 @@ using Asteroids.Lib;
 
 namespace Asteroids
 {
-	public class BulletFactoryService
+	public class BulletFactoryService : Service
 	{
-		public static void Sub(IEventStream server)
+		private EntityFactoryService entityFactory;
+
+		public void Inject(EntityFactoryService entityFactory)
 		{
-			server.Sub<CreateBullet>(CreateBullet);
+			this.entityFactory = entityFactory;
 		}
 
-		private static void CreateBullet(CreateBullet msg)
+		public void CreateBullet(CreateBullet msg)
 		{
-			var state = msg.Tick.State;
-			var client = msg.Tick.ClientStream;
+			var bullet = entityFactory.NewEntity<Bullet>();
+			bullet.Position = State.PlayerPosition;
+			bullet.Velocity = State.PlayerDirection * Consts.PrimaryBulletSpeed;
 
-			var b = new Bullet
-			{
-				Position = state.PlayerPosition,
-				Velocity = state.PlayerDirection * Consts.PrimaryBulletSpeed,
-			};
-
-			state.Bullets.Add(b);
-			client.Pub<BulletCreated>(new() { Bullet = b, });
+			Client.Pub<BulletCreated>(new() { Bullet = bullet, });
 		}
 	}
 }

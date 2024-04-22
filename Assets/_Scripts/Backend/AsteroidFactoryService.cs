@@ -5,14 +5,16 @@ using Random = UnityEngine.Random;
 
 namespace Asteroids
 {
-	public class AsteroidFactoryService
+	public class AsteroidFactoryService : Service
 	{
-		public static void Sub(IEventStream main)
+		private EntityFactoryService entityFactory;
+		
+		public void Inject(EntityFactoryService entityFactory)
 		{
-			main.Sub<Tick>(Tick);
+			this.entityFactory = entityFactory;
 		}
-
-		private static void Tick(Tick tick)
+		
+		public void Tick(Tick tick)
 		{
 			var state = tick.State;
 			var client = tick.ClientStream;
@@ -22,14 +24,11 @@ namespace Asteroids
 			
 			state.NextAsteroid = state.Tick + Random.Range(Consts.AsteroidsTimerRange.x, Consts.AsteroidsTimerRange.y);
 
-			var a = new Asteroid
-			{
-				Position = state.PlayerPosition,
-				Velocity = state.PlayerDirection * Consts.PrimaryBulletSpeed,
-			};
+			var asteroid = entityFactory.NewEntity<Asteroid>();
+			asteroid.Position = state.PlayerPosition;
+			asteroid.Velocity = state.PlayerDirection * Consts.PrimaryBulletSpeed;
 
-			state.Asteroids.Add(a);
-			client.Pub<CreatedAsteroid>(new() { Asteroid = a, });
+			client.Pub<CreatedAsteroid>(new() { Asteroid = asteroid, });
 		}
 	}
 }

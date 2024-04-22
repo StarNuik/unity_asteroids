@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Asteroids.Backend;
 using Asteroids.Lib;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ namespace Asteroids
 		private IEventStream streamOut;
 
 		private SessionState state;
-		private DeltaService deltaService;
+		private ServerServices services;
 
 		public Server()
 		{
@@ -25,7 +24,7 @@ namespace Asteroids
 			streamOut = new PolledEventStream();
 			
 			state = new();
-			deltaService = new(state);
+			services = new();
 
 			GameLoop();
 		}
@@ -37,7 +36,13 @@ namespace Asteroids
 
 		private async void GameLoop()
 		{
-			Subscribe();
+			services.Inject(
+				state,
+				streamIn,
+				streamMain,
+				streamOut
+			);
+			services.Setup();
 
 			while (true)
 			{
@@ -45,26 +50,16 @@ namespace Asteroids
 
 				if (IsEnabled)
 				{
-					streamMain.Pub<Tick>(
+					streamMain.Pub(
 						Tick.New(state, streamMain, streamOut)
 					);
+					//todo: ponder on whether a better solution exists
+					streamMain.Pub(new Sync());
 					state.Tick++;
 				}
 
 				await Task.Delay(Consts.ServerTickMs);
 			}
-		}
-
-		private void Subscribe()
-		{
-			deltaService.Sub(streamIn);
-
-			PlayerControlsService.Sub(streamMain);
-			PlayerPhysicsService.Sub(streamMain);
-			PlayerAttackService.Sub(streamMain);
-			EntityClampService.Sub(streamMain);
-			BulletFactoryService.Sub(streamMain);
-			AsteroidFactoryService.Sub(streamMain);
 		}
 	}
 }

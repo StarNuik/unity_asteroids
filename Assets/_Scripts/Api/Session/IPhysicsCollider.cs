@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Asteroids
 {
-	public interface IPhysicsCollider
+	public interface IPhysicsCollider // : IPhysicsEntity
 	{
 		public Vector2 Position { get; }
 		public float Radius { get; }

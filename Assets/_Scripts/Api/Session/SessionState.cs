@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 
 namespace Asteroids
@@ -6,6 +7,9 @@ namespace Asteroids
 	public class SessionState
 	{
 		public int Tick;
+		public int NextId = int.MinValue;
+
+		public List<IEntity> Entities = new();
 
 		public InputDelta PlayerInput;
 		
@@ -13,10 +17,10 @@ namespace Asteroids
 		public Vector2 PlayerDirection = Vector2.right;
 		public Vector2 PlayerVelocity;
 		public int LastPrimaryFire = -Consts.PrimaryAttackCooldown;
-
-		public List<Bullet> Bullets = new();
-
 		public int NextAsteroid = Consts.AsteroidsTimerRange.y;
-		public List<Asteroid> Asteroids = new();
+
+		public ReadOnlyCollection<IPhysicsEntity> PhysicsEntities;
+		public ReadOnlyCollection<Bullet> Bullets;
+		public ReadOnlyCollection<Asteroid> Asteroids;
 	}
 }

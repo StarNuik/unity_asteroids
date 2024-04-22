@@ -15,7 +15,7 @@ namespace Asteroids
 
 		private void Update()
 		{
-			transform.position += Velocity * Time.deltaTime;
+			// transform.position += Velocity * Time.deltaTime;
 		}
 	}
 }
