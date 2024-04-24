@@ -15,7 +15,7 @@ namespace Asteroids
 		public const float PlayerAngularSpeed = 180f;
 		
 		public const int PrimaryAttackCooldown = (int)(0.3f * ticksPerSecond);
-		public const float PrimaryBulletSpeed = 2.0f;
+		public const float PrimaryBulletSpeed = 0.6f;
 
 		public readonly static Vector2Int AsteroidsTimerRange = new(
 			(int)(0.5f * ticksPerSecond),

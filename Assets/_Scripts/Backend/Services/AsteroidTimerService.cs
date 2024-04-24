@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 namespace Asteroids
 {
-	public class AsteroidFactoryService : Service
+	public class AsteroidTimerService : Service
 	{
 		private EntityFactoryService entityFactory;
 		
@@ -20,12 +20,7 @@ namespace Asteroids
 				return;
 			
 			State.NextAsteroid = State.Tick + Random.Range(Consts.AsteroidsTimerRange.x, Consts.AsteroidsTimerRange.y);
-
-			var asteroid = entityFactory.NewEntity<Asteroid>();
-			asteroid.Position = State.PlayerPosition;
-			asteroid.Velocity = State.PlayerDirection * Consts.PrimaryBulletSpeed;
-
-			Client.Pub<CreatedAsteroid>(new() { Asteroid = asteroid, });
+			entityFactory.NewAsteroid();
 		}
 	}
 }

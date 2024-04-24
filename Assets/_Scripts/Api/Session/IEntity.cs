@@ -4,6 +4,6 @@ namespace Asteroids
 {
 	public interface IEntity
 	{
-		public int Id { get; set; }
+		public Entity Entity { get; }
 	}
 }

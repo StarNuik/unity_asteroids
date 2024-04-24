@@ -15,6 +15,9 @@ namespace Asteroids.Lib
 			chan.Sub(Wrap(listener));
 		}
 
+		public void Sub<T>(Action listener)
+			=> Sub<T>(_ => listener());
+
 		public void Pub<T>(T payload)
 		{
 			var t = typeof(T);

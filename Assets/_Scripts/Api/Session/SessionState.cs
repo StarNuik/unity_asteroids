@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using UnityEngine;
 
 namespace Asteroids
@@ -9,8 +10,6 @@ namespace Asteroids
 		public int Tick;
 		public int NextId = int.MinValue;
 
-		public List<IEntity> Entities = new();
-
 		public InputDelta PlayerInput;
 		
 		public Vector2 PlayerPosition = Vector2.one * 0.5f;
@@ -19,8 +18,15 @@ namespace Asteroids
 		public int LastPrimaryFire = -Consts.PrimaryAttackCooldown;
 		public int NextAsteroid = Consts.AsteroidsTimerRange.y;
 
-		public ReadOnlyCollection<IPhysicsEntity> PhysicsEntities;
-		public ReadOnlyCollection<Bullet> Bullets;
-		public ReadOnlyCollection<Asteroid> Asteroids;
+		public List<Entity> Entities = new();
+		public List<Bullet> Bullets = new();
+		public List<Asteroid> Asteroids = new();
+
+		public IEnumerable<IPhysicsEntity> PhysicsEntities
+			=> Bullets
+				.Select(bullet => bullet as IPhysicsEntity)
+				.Union(Asteroids
+					.Select(asteroid => asteroid as IPhysicsEntity)
+				);
 	}
 }

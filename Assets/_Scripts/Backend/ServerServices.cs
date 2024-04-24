@@ -7,15 +7,14 @@ namespace Asteroids
 	public class ServerServices : Service
 	{
 		private DeltaService deltaService = new();
-		private EntityRegistryService entityRegistry = new();
 		private EntityFactoryService entityFactory = new();
-		private BulletFactoryService bulletFactory = new();
-		private AsteroidFactoryService asteroidFactory = new();
+		private AsteroidTimerService asteroidTimer = new();
 		private SyncService sync = new();
 		private PlayerControlsService playerControls = new();
 		private PlayerPhysicsService playerPhysics = new();
 		private PlayerAttackService playerAttack = new();
 		private EntityClampService entityClamp = new();
+		private PhysicsService physics = new();
 
 		public void Setup()
 		{
@@ -23,14 +22,16 @@ namespace Asteroids
 
 			Input.Sub<InputDelta>(deltaService.ApplyInput);
 
-			Main.Sub<EntityCreated>(entityRegistry.RegisterEntity);
-			Main.Sub<CreateBullet>(bulletFactory.CreateBullet);
+			Main.Sub<PlayerAttack>(
+				_ => entityFactory.NewBullet()
+			);
 			
-			Main.Sub<Tick>(asteroidFactory.Tick);
+			Main.Sub<Tick>(physics.Tick);
 			Main.Sub<Tick>(playerControls.Tick);
 			Main.Sub<Tick>(playerPhysics.Tick);
 			Main.Sub<Tick>(playerAttack.Tick);
 			Main.Sub<Tick>(entityClamp.WarpEntities);
+			Main.Sub<Tick>(asteroidTimer.Tick);
 
 			Main.Sub<Sync>(sync.PubUpdates);
 		}
@@ -38,13 +39,12 @@ namespace Asteroids
 		private void InjectChildren()
 		{
 			var services = new List<Service>() {
-				entityClamp, playerAttack, playerPhysics, playerControls, sync, deltaService, entityRegistry, entityFactory, bulletFactory,
+				physics, entityClamp, playerAttack, playerPhysics, playerControls, sync, deltaService, entityFactory, asteroidTimer,
 			};
 
 			services.ForEach(s => s.Inject(State, Input, Main, Client));
 
-			bulletFactory.Inject(entityFactory);
-			asteroidFactory.Inject(entityFactory);
+			asteroidTimer.Inject(entityFactory);
 		}
 	}
 }

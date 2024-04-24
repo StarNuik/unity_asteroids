@@ -12,10 +12,10 @@ namespace Asteroids
 
 		private void Awake()
 		{
-			server.Sub<CreatedAsteroid>(RecreateAsteroid);
+			server.Sub<CreateAsteroid>(RecreateAsteroid);
 		}
 
-		private void RecreateAsteroid(CreatedAsteroid asteroid)
+		private void RecreateAsteroid(CreateAsteroid asteroid)
 		{
 			//
 			Debug.Log("[ AsteroidsLifetime.RecreateAsteroid ]");

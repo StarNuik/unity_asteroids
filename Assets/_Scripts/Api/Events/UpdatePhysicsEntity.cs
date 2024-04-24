@@ -5,18 +5,13 @@ namespace Asteroids
 {
 	public struct UpdatePhysicsEntity
 	{
-		public int Id;
-		public Vector2 Position;
-		public Vector2 Velocity;
+		public Entity Entity;
+		public PhysicsBody PhysicsBody;
 
-		public static UpdatePhysicsEntity From(IPhysicsEntity body)
+		public UpdatePhysicsEntity(IPhysicsEntity entity)
 		{
-			return new()
-			{
-				Id = body.Id,
-				Position = body.Position,
-				Velocity = body.Velocity,
-			};
+			Entity = entity.Entity;
+			PhysicsBody = entity.PhysicsBody;
 		}
 	}
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace Asteroids
 {
-	public struct CreatedAsteroid
+	public struct CreateAsteroid
 	{
 		public Asteroid Asteroid;
 	}

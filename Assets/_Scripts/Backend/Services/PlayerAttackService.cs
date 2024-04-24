@@ -26,7 +26,7 @@ namespace Asteroids
 				return;
 			
 			State.LastPrimaryFire = State.Tick;
-			Main.Pub(new CreateBullet());
+			Main.Pub(new PlayerAttack());
 		}
 	}
 }
