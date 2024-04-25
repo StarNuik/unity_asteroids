@@ -10,5 +10,20 @@ namespace Asteroids
 		{
 			Id = id;
 		}
+
+		// public bool Equals(Entity other)
+		// {
+		// 	return other.Id == this.Id;
+		// }
+		
+		public static bool operator ==(Entity left, Entity right)
+		{
+			return left.Id.Equals(right.Id);
+		}
+
+		public static bool operator !=(Entity left, Entity right)
+		{
+			return !left.Id.Equals(right.Id);
+		}
 	}
 }

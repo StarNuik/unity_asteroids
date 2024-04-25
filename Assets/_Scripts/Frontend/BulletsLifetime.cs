@@ -19,6 +19,16 @@ namespace Asteroids
 		{
 			server.Sub<CreateBullet>(NewBullet);
 			server.Sub<UpdatePhysicsEntity>(TryUpdateBullet);
+			server.Sub<DeleteEntity>(TryDeleteBullet);
+		}
+
+		private void TryDeleteBullet(DeleteEntity msg)
+		{
+			if (!bullets.ContainsKey(msg.Entity))
+				return;
+			
+			bullets.Remove(msg.Entity, out var bullet);
+			Destroy(bullet.gameObject);
 		}
 
 		private void NewBullet(CreateBullet msg)

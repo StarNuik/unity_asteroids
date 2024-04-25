@@ -15,6 +15,7 @@ namespace Asteroids
 		private PlayerAttackService playerAttack = new();
 		private EntityClampService entityClamp = new();
 		private PhysicsService physics = new();
+		private BulletsTimeoutService bulletsTimeout = new();
 
 		public void Setup()
 		{
@@ -32,6 +33,7 @@ namespace Asteroids
 			Main.Sub<Tick>(playerAttack.Tick);
 			Main.Sub<Tick>(entityClamp.WarpEntities);
 			Main.Sub<Tick>(asteroidTimer.Tick);
+			Main.Sub<Tick>(bulletsTimeout.Tick);
 
 			Main.Sub<Sync>(sync.PubUpdates);
 		}
@@ -39,12 +41,13 @@ namespace Asteroids
 		private void InjectChildren()
 		{
 			var services = new List<Service>() {
-				physics, entityClamp, playerAttack, playerPhysics, playerControls, sync, deltaService, entityFactory, asteroidTimer,
+				bulletsTimeout, physics, entityClamp, playerAttack, playerPhysics, playerControls, sync, deltaService, entityFactory, asteroidTimer,
 			};
 
 			services.ForEach(s => s.Inject(State, Input, Main, Client));
 
 			asteroidTimer.Inject(entityFactory);
+			bulletsTimeout.Inject(entityFactory);
 		}
 	}
 }

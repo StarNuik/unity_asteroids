@@ -9,10 +9,23 @@ namespace Asteroids
 {
 	public class EntityFactoryService : Service
 	{
+		// `stateList` is yucky,
+		// but I don't want to spend time
+		// properly implementing components from ECS
+		public void Delete<T>(List<T> stateList, T item)
+			where T : IEntity
+		{
+			var idx = stateList.FindIndex(i => i.Entity == item.Entity);
+			Assert.IsTrue(idx >= 0);
+			stateList.RemoveAt(idx);
+
+			DeleteEntity(item.Entity);
+		}
+
 		public Asteroid NewAsteroid()
 		{
 			var entity = NewEntity();
-			var asteroid = new Asteroid()
+			var asteroid = new Asteroid(entity)
 			{
 				PhysicsBody = BulletBody(),
 			};
@@ -25,7 +38,7 @@ namespace Asteroids
 		public Bullet NewBullet()
 		{
 			var entity = NewEntity();
-			var bullet = new Bullet(entity)
+			var bullet = new Bullet(entity, State.Tick)
 			{
 				PhysicsBody = BulletBody(),
 			};
@@ -33,6 +46,20 @@ namespace Asteroids
 			State.Bullets.Add(bullet);
 			Client.Pub<CreateBullet>(new() { Bullet = bullet, });
 			return bullet;
+		}
+
+		private void Clean<T>(List<T> items, IEntity entity)
+			where T : IEntity
+		{
+			var idx = items.FindIndex(i => i.Entity == entity.Entity);
+			items.RemoveAt(idx);
+		}
+
+		private void DeleteEntity(Entity entity)
+		{
+			var idx = State.Entities.FindIndex(e => e == entity);
+			State.Entities.RemoveAt(idx);
+			Client.Pub<DeleteEntity>(new() { Entity = entity, });
 		}
 
 		private Entity NewEntity()

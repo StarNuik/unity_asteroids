@@ -17,6 +17,8 @@ namespace Asteroids
 		public const int PrimaryAttackCooldown = (int)(0.3f * ticksPerSecond);
 		public const float PrimaryBulletSpeed = 0.6f;
 
+		public const int BulletLifeDuration = (int)(2f * ticksPerSecond);
+
 		public readonly static Vector2Int AsteroidsTimerRange = new(
 			(int)(0.5f * ticksPerSecond),
 			(int)(2.0f * ticksPerSecond)

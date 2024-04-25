@@ -7,11 +7,11 @@ namespace Asteroids
 {
 	public class AsteroidTimerService : Service
 	{
-		private EntityFactoryService entityFactory;
+		private EntityFactoryService EntityFactory;
 		
 		public void Inject(EntityFactoryService entityFactory)
 		{
-			this.entityFactory = entityFactory;
+			EntityFactory = entityFactory;
 		}
 		
 		public void Tick(Tick tick)
@@ -20,7 +20,7 @@ namespace Asteroids
 				return;
 			
 			State.NextAsteroid = State.Tick + Random.Range(Consts.AsteroidsTimerRange.x, Consts.AsteroidsTimerRange.y);
-			entityFactory.NewAsteroid();
+			EntityFactory.NewAsteroid();
 		}
 	}
 }
