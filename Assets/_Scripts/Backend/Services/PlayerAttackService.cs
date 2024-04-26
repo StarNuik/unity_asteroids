@@ -26,7 +26,16 @@ namespace Asteroids
 				return;
 			
 			State.LastPrimaryFire = State.Tick;
-			Main.Pub(new PlayerAttack());
+			Main.Pub(new RequestBullet() { PhysicsBody = BulletBody(), });
+		}
+
+		private PhysicsBody BulletBody()
+		{
+			return new()
+			{
+				Position = State.PlayerPosition,
+				Velocity = State.PlayerDirection * Consts.PrimaryBulletSpeed,
+			};
 		}
 	}
 }

@@ -9,10 +9,29 @@ namespace Asteroids
 {
 	public class EntityFactoryService : Service
 	{
+		public void FinishDeletes()
+		{
+			foreach (var delete in State.QueuedDeletes)
+			{
+				delete();
+			}
+			State.QueuedDeletes.Clear();
+		}
+
+		public void QueueDelete<T>(List<T> stateList, T item)
+			where T : IEntity
+		{
+			State.QueuedDeletes.Add(() => {
+				if (!State.Entities.Contains(item.Entity))
+					return;
+				Delete(stateList, item);
+			});
+		}
+
 		// `stateList` is yucky,
 		// but I don't want to spend time
 		// properly implementing components from ECS
-		public void Delete<T>(List<T> stateList, T item)
+		private void Delete<T>(List<T> stateList, T item)
 			where T : IEntity
 		{
 			var idx = stateList.FindIndex(i => i.Entity == item.Entity);
@@ -22,37 +41,30 @@ namespace Asteroids
 			DeleteEntity(item.Entity);
 		}
 
-		public Asteroid NewAsteroid(PhysicsBody body)
+		public void NewAsteroid(RequestAsteroid req)
 		{
 			var entity = NewEntity();
-			var asteroid = new Asteroid(entity)
+			var asteroid = new Asteroid(entity, req.Radius)
 			{
-				PhysicsBody = body,
+				PhysicsBody = req.PhysicsBody,
 			};
 
 			State.Asteroids.Add(asteroid);
 			Client.Pub<CreateAsteroid>(new() { Asteroid = asteroid, });
-			return asteroid;
+			// return asteroid;
 		}
 
-		public Bullet NewBullet()
+		public void NewBullet(RequestBullet req)
 		{
 			var entity = NewEntity();
-			var bullet = new Bullet(entity, State.Tick)
+			var bullet = new Bullet(entity, State.Tick, Consts.BulletRadius)
 			{
-				PhysicsBody = BulletBody(),
+				PhysicsBody = req.PhysicsBody,
 			};
 
 			State.Bullets.Add(bullet);
 			Client.Pub<CreateBullet>(new() { Bullet = bullet, });
-			return bullet;
-		}
-
-		private void Clean<T>(List<T> items, IEntity entity)
-			where T : IEntity
-		{
-			var idx = items.FindIndex(i => i.Entity == entity.Entity);
-			items.RemoveAt(idx);
+			// return bullet;
 		}
 
 		private void DeleteEntity(Entity entity)
@@ -72,15 +84,6 @@ namespace Asteroids
 			Client.Pub<CreateEntity>(new() { Entity = entity, });
 
 			return entity;
-		}
-
-		private PhysicsBody BulletBody()
-		{
-			return new()
-			{
-				Position = State.PlayerPosition,
-				Velocity = State.PlayerDirection * Consts.PrimaryBulletSpeed,
-			};
 		}
 
 		private int NextId(SessionState state)

@@ -19,8 +19,9 @@ namespace Asteroids
 			body.Position = ChoosePosition();
 			body.Velocity = ChooseDirection(body.Position)
 				* RandomExt.Range(Consts.AsteroidSpeedRange);
+			var radius = ChooseSize(body.Velocity);
 
-			Main.Pub<RequestAsteroidAt>(new() { PhysicsBody = body, });
+			Main.Pub<RequestAsteroid>(new() { PhysicsBody = body, Radius = radius, });
 		}
 
 		private Vector2 ChoosePosition()
@@ -61,6 +62,13 @@ namespace Asteroids
 				dir = towardsCenter;
 
 			return dir;
+		}
+
+		private float ChooseSize(Vector2 velocity)
+		{
+			var f = MathfExt.InverseLerp(Consts.AsteroidSpeedRange, velocity.magnitude);
+			var size = MathfExt.Lerp(Consts.AsteroidSizeRange, f);
+			return size;
 		}
 	}
 }

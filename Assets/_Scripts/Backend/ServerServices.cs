@@ -16,6 +16,9 @@ namespace Asteroids
 		private EntityClampService entityClamp = new();
 		private PhysicsService physics = new();
 		private BulletsTimeoutService bulletsTimeout = new();
+		private CollisionsService collisions = new();
+		private BulletsCollisionsService bulletsCollisions = new();
+		private AsteroidsCollisionsService asteroidsCollisions = new();
 
 		public void Setup()
 		{
@@ -23,12 +26,10 @@ namespace Asteroids
 
 			Input.Sub<InputDelta>(deltaService.ApplyInput);
 
-			Main.Sub<RequestAsteroidAt>(
-				req => entityFactory.NewAsteroid(req.PhysicsBody)
-			);
-			Main.Sub<PlayerAttack>(
-				_ => entityFactory.NewBullet()
-			);
+			Main.Sub<RequestAsteroid>(entityFactory.NewAsteroid);
+			Main.Sub<RequestBullet>(entityFactory.NewBullet);
+			Main.Sub<Collision>(bulletsCollisions.TryCollision);
+			Main.Sub<Collision>(asteroidsCollisions.TryCollision);
 			
 			Main.Sub<Tick>(physics.Tick);
 			Main.Sub<Tick>(playerControls.Tick);
@@ -37,6 +38,9 @@ namespace Asteroids
 			Main.Sub<Tick>(entityClamp.WarpEntities);
 			Main.Sub<Tick>(asteroidTimedSpawn.Tick);
 			Main.Sub<Tick>(bulletsTimeout.Tick);
+			Main.Sub<Tick>(collisions.Tick);
+
+			Main.Sub<FinishQueued>(entityFactory.FinishDeletes);
 
 			Main.Sub<Sync>(sync.PubUpdates);
 		}
@@ -44,12 +48,14 @@ namespace Asteroids
 		private void InjectChildren()
 		{
 			var services = new List<Service>() {
-				bulletsTimeout, physics, entityClamp, playerAttack, playerPhysics, playerControls, sync, deltaService, entityFactory, asteroidTimedSpawn,
+				asteroidsCollisions, bulletsCollisions, collisions, bulletsTimeout, physics, entityClamp, playerAttack, playerPhysics, playerControls, sync, deltaService, entityFactory, asteroidTimedSpawn,
 			};
 
 			services.ForEach(s => s.Inject(State, Input, Main, Client));
 
-			bulletsTimeout.Inject(entityFactory);
+			bulletsTimeout.Inject(entityFactory.QueueDelete);
+			bulletsCollisions.Inject(entityFactory.QueueDelete);
+			asteroidsCollisions.Inject(entityFactory.QueueDelete);
 		}
 	}
 }

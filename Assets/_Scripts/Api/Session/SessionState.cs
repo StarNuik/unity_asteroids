@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,15 +19,21 @@ namespace Asteroids
 		public int LastPrimaryFire = -Consts.PrimaryAttackCooldown;
 		public int NextAsteroid = Consts.AsteroidsTimerRange.y;
 
+		//todo: change to HashSet<>
 		public List<Entity> Entities = new();
+		//todo: change to Dictionary<>
 		public List<Bullet> Bullets = new();
+		//todo: change to Dictionary<>
 		public List<Asteroid> Asteroids = new();
 
-		public IEnumerable<IPhysicsEntity> PhysicsEntities
-			=> Bullets
-				.Select(bullet => bullet as IPhysicsEntity)
-				.Union(Asteroids
-					.Select(asteroid => asteroid as IPhysicsEntity)
-				);
+		public IEnumerable<IPhysicsEntity> PhysicsEntities => ColliderEntities.Cast<IPhysicsEntity>();
+		
+		public IEnumerable<IColliderEntity> ColliderEntities => Bullets
+			.Select(bullet => bullet as IColliderEntity)
+			.Union(
+				Asteroids.Select(asteroid => asteroid as IColliderEntity)
+			);
+
+		public List<Action> QueuedDeletes = new();
 	}
 }

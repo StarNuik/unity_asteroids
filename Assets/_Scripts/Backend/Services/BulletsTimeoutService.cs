@@ -1,14 +1,15 @@
 using System;
+using System.Collections.Generic;
 
 namespace Asteroids
 {
 	public class BulletsTimeoutService : Service
 	{
-		private EntityFactoryService EntityFactory;
+		private Action<List<Bullet>, Bullet> BulletDestructor;
 
-		public void Inject(EntityFactoryService entityFactory)
+		public void Inject(Action<List<Bullet>, Bullet> bulletDestructor)
 		{
-			EntityFactory = entityFactory;
+			BulletDestructor = bulletDestructor;
 		}
 
 		public void Tick()
@@ -24,7 +25,7 @@ namespace Asteroids
 
 				if (ticksLeft <= 0)
 				{
-					EntityFactory.Delete(State.Bullets, bullet);
+					BulletDestructor(State.Bullets, bullet);
 				}
 			}
 		}

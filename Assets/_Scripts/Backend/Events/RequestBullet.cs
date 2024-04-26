@@ -2,7 +2,7 @@ using System;
 
 namespace Asteroids
 {
-	public struct RequestAsteroidAt
+	public struct RequestBullet
 	{
 		public PhysicsBody PhysicsBody;
 	}

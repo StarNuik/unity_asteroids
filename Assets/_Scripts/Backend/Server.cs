@@ -51,6 +51,7 @@ namespace Asteroids
 				if (IsEnabled)
 				{
 					streamMain.Pub(new Tick());
+					streamMain.Pub(new FinishQueued());
 					//todo: ponder on whether a better solution exists
 					streamMain.Pub(new Sync());
 					state.Tick++;

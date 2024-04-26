@@ -2,6 +2,6 @@ using System;
 
 namespace Asteroids
 {
-	public struct PlayerAttack
+	public struct FinishQueued
 	{}
 }

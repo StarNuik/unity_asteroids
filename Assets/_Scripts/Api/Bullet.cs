@@ -4,17 +4,20 @@ using UnityEngine;
 
 namespace Asteroids
 {
-	public struct Bullet : IPhysicsEntity
+	public struct Bullet : IColliderEntity
 	{
 		public Entity Entity { get; private set; }
-		public PhysicsBody PhysicsBody { get; set; }
+		public float Radius { get; private set; }
 		public int CreationTick { get; set; }
+		public PhysicsBody PhysicsBody { get; set; }
 
-		public Bullet(Entity entity, int creationTick)
+		public Bullet(Entity entity, int creationTick, float radius)
 		{
 			Entity = entity;
-			PhysicsBody = default;
 			CreationTick = creationTick;
+			Radius = radius;
+			
+			PhysicsBody = default;
 		}
 	}
 }
