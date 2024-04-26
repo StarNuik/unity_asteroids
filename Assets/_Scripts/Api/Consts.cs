@@ -9,13 +9,13 @@ namespace Asteroids
 		public const float ServerDeltaTime = 1f / 1000f * (float)ServerTickMs;
 
 		// Physics
-		public const float WorldDrag = 0.1f;
+		public const float WorldDrag = 0.2f;
 		
 		// Player
-		public const float PlayerAcceleration = 0.4f;
+		public const float PlayerAcceleration = 0.6f;
 		public const float PlayerTopSpeed = 0.5f;
-		public const float PlayerAngularSpeed = 180f;
-		public const int PrimaryAttackCooldown = (int)(0.3f * ticksPerSecond);
+		public const float PlayerAngularSpeed = 270f;
+		public const int PrimaryAttackCooldown = (int)(0.2f * ticksPerSecond);
 
 		// Bullet
 		public const float PrimaryBulletSpeed = 0.6f;
