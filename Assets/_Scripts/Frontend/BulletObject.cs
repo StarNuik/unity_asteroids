@@ -4,7 +4,7 @@ using Editor = UnityEngine.SerializeField;
 
 namespace Asteroids
 {
-	public class BulletObject : MonoBehaviour
+	public class BulletObject : MonoBehaviour, IClonedPhysicsBody
 	{
 		public Vector3 Position
 		{

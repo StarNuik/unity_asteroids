@@ -22,7 +22,9 @@ namespace Asteroids
 		public readonly static Vector2Int AsteroidsTimerRange = new(
 			(int)(0.5f * ticksPerSecond),
 			(int)(2.0f * ticksPerSecond)
-		); 
+		);
+
+		public readonly static Vector2 AsteroidSpeedRange = new(.125f, .25f);
 
 		private const float ticksPerSecond = 1000f / (float)ServerTickMs;
 	}

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Asteroids.Frontend;
 using UnityEngine;
 using Editor = UnityEngine.SerializeField;
@@ -7,18 +8,27 @@ namespace Asteroids
 {
 	public class AsteroidsLifetime : MonoBehaviour
 	{
-		private ISubscribable server => Locator.ServerIn;
-		// private FieldService field => Locator.Field;
+		[Editor] AsteroidObject asteroidPrefab;
+
+		private ISubscribable Server => Locator.ServerIn;
+		private EntitiesHelperService EntitiesHelper => Locator.EntitiesHelper;
+
+		private Dictionary<Entity, AsteroidObject> asteroids = new();
 
 		private void Awake()
 		{
-			server.Sub<CreateAsteroid>(RecreateAsteroid);
+			Server.Sub<CreateAsteroid>(NewAsteroid);
+			Server.Sub<UpdatePhysicsEntity>(TryUpdateAsteroid);
+			Server.Sub<DeleteEntity>(TryDeleteAsteroid);
 		}
 
-		private void RecreateAsteroid(CreateAsteroid asteroid)
-		{
-			//
-			Debug.Log("[ AsteroidsLifetime.RecreateAsteroid ]");
-		}
+		private void NewAsteroid(CreateAsteroid msg)
+			=> EntitiesHelper.NewEntity(asteroids, msg.Asteroid, asteroidPrefab);
+
+		private void TryUpdateAsteroid(UpdatePhysicsEntity update)
+			=> EntitiesHelper.TryUpdateEntity(asteroids, update);
+
+		private void TryDeleteAsteroid(DeleteEntity msg)
+			=> EntitiesHelper.TryDeleteEntity(asteroids, msg);
 	}
 }

@@ -22,12 +22,12 @@ namespace Asteroids
 			DeleteEntity(item.Entity);
 		}
 
-		public Asteroid NewAsteroid()
+		public Asteroid NewAsteroid(PhysicsBody body)
 		{
 			var entity = NewEntity();
 			var asteroid = new Asteroid(entity)
 			{
-				PhysicsBody = BulletBody(),
+				PhysicsBody = body,
 			};
 
 			State.Asteroids.Add(asteroid);

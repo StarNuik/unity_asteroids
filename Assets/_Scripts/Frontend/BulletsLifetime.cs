@@ -10,48 +10,25 @@ namespace Asteroids
 	{
 		[Editor] BulletObject bulletPrefab;
 
-		private ISubscribable server => Locator.ServerIn;
-		private FieldService field => Locator.Field;
+		private ISubscribable Server => Locator.ServerIn;
+		private EntitiesHelperService EntitiesHelper => Locator.EntitiesHelper;
 
 		private Dictionary<Entity, BulletObject> bullets = new();
 
 		private void Awake()
 		{
-			server.Sub<CreateBullet>(NewBullet);
-			server.Sub<UpdatePhysicsEntity>(TryUpdateBullet);
-			server.Sub<DeleteEntity>(TryDeleteBullet);
-		}
-
-		private void TryDeleteBullet(DeleteEntity msg)
-		{
-			if (!bullets.ContainsKey(msg.Entity))
-				return;
-			
-			bullets.Remove(msg.Entity, out var bullet);
-			Destroy(bullet.gameObject);
+			Server.Sub<CreateBullet>(NewBullet);
+			Server.Sub<UpdatePhysicsEntity>(TryUpdateBullet);
+			Server.Sub<DeleteEntity>(TryDeleteBullet);
 		}
 
 		private void NewBullet(CreateBullet msg)
-		{
-			var bullet = msg.Bullet;
-
-			var instance = Instantiate(bulletPrefab);
-			instance.Position = field.ToWorld(bullet.PhysicsBody.Position);
-			instance.Velocity = bullet.PhysicsBody.Velocity.ToXY0();
-
-			bullets.Add(bullet.Entity, instance);
-			// clone.
-		}
+			=> EntitiesHelper.NewEntity(bullets, msg.Bullet, bulletPrefab);
 
 		private void TryUpdateBullet(UpdatePhysicsEntity update)
-		{
-			var entity = update.Entity;
-			if (!bullets.ContainsKey(entity))
-				return;
-			
-			var bullet = bullets[entity];
-			bullet.Position = field.ToWorld(update.PhysicsBody.Position);
-			bullet.Velocity = update.PhysicsBody.Velocity.ToXY0();
-		}
+			=> EntitiesHelper.TryUpdateEntity(bullets, update);
+
+		private void TryDeleteBullet(DeleteEntity msg)
+			=> EntitiesHelper.TryDeleteEntity(bullets, msg);
 	}
 }

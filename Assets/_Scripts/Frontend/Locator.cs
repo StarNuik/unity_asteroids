@@ -8,5 +8,6 @@ namespace Asteroids.Frontend
 		public static IPublisher ClientOut;
 
 		public static FieldService Field;
+		public static EntitiesHelperService EntitiesHelper;
 	}
 }
