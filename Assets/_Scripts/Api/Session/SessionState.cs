@@ -6,23 +6,24 @@ using UnityEngine;
 
 namespace Asteroids
 {
+	//rules: prefer `LastSmth` over `NextSmth`
 	public class SessionState
 	{
 		public int Tick;
-		public int NextId = int.MinValue;
 
-		public UpdateInput PlayerInput;
-		
-		// public Vector2 PlayerPosition = Vector2.one * 0.5f;
-		// public Vector2 PlayerDirection = Vector2.right;
-		// public Vector2 PlayerVelocity;
+		public int LastId = int.MinValue;
 		public int LastPrimaryFire = -Consts.PrimaryAttackCooldown;
 		public int NextAsteroid = Consts.AsteroidsTimerRange.y;
+		public int LastMissile = 0;
+		public int PlayerScore = 0;
+		
+		public UpdateInput PlayerInput;
 
 		public HashSet<Entity> Entities = new();
 		public Dictionary<Entity, PlayerActor> Actors = new();
 		public Dictionary<Entity, Bullet> Bullets = new();
 		public Dictionary<Entity, Asteroid> Asteroids = new();
+		public Dictionary<Entity, Missile> Missiles = new();
 
 		public IEnumerable<IPhysicsEntity> PhysicsEntities =>
 			ColliderEntities.Cast<IPhysicsEntity>();
@@ -34,6 +35,9 @@ namespace Asteroids
 			)
 			.Union(
 				Asteroids.Select(pair => pair.Value as IColliderEntity)
+			)
+			.Union(
+				Missiles.Select(pair => pair.Value as IColliderEntity)
 			)
 		;
 

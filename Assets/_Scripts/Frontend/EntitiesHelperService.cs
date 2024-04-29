@@ -18,7 +18,7 @@ namespace Asteroids
 			collection.Add(info.Entity, instance);
 		}
 
-		public void TryUpdateEntity<TPrefab>(Dictionary<Entity, TPrefab> collection, UpdatePhysicsEntity update)
+		public void TryUpdatePhysics<TPrefab>(Dictionary<Entity, TPrefab> collection, UpdatePhysicsEntity update)
 			where TPrefab : ColliderObject
 		{
 			var entity = update.Entity;
@@ -38,11 +38,6 @@ namespace Asteroids
 			
 			collection.Remove(entity, out var item);
 			Object.Destroy(item.gameObject);
-		}
-
-		private void Awake()
-		{
-			Locator.EntitiesHelper = this;
 		}
 	}
 }

@@ -26,7 +26,7 @@ namespace Asteroids
 			=> EntitiesHelper.NewEntity(actors, msg.Actor, actorPrefab);
 
 		private void TryUpdatePhysics(UpdatePhysicsEntity update)
-			=> EntitiesHelper.TryUpdateEntity(actors, update);
+			=> EntitiesHelper.TryUpdatePhysics(actors, update);
 
 		private void TryDeleteActor(DeleteEntity msg)
 			=> EntitiesHelper.TryDeleteEntity(actors, msg);

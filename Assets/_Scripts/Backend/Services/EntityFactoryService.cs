@@ -98,8 +98,8 @@ namespace Asteroids
 
 		private int NextId()
 		{
-			var id = State.NextId;
-			State.NextId = unchecked(State.NextId + 1);
+			var id = unchecked(State.LastId + 1);
+			State.LastId = id;
 			return id;
 		}
 	}
