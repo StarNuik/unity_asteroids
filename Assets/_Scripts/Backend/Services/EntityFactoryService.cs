@@ -22,8 +22,8 @@ namespace Asteroids
 			where T : IEntity
 		{
 			State.QueuedDeletes.Add(() => {
-				// if (!State.Entities.Contains(item.Entity))
-				// 	return;
+				if (!State.Entities.Contains(item.Entity))
+					return;
 				Delete(stateCollection, item);
 			});
 		}

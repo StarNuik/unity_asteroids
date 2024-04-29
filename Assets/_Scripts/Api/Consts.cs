@@ -23,7 +23,7 @@ namespace Asteroids
 		// Bullet
 		public const float PrimaryBulletSpeed = 0.6f;
 		public const int BulletLifeDuration = (int)(2f * ticksPerSecond);
-		public const float BulletRadius = 0.01f;
+		public const float BulletRadius = 0.005f;
 
 		// Asteroid
 		public readonly static Vector2Int AsteroidsTimerRange = new(
