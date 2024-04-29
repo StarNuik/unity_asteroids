@@ -9,11 +9,12 @@ namespace Asteroids
 		public float Radius { get; private set; }
 		public PhysicsBody PhysicsBody { get; set; }
 
-		public Asteroid(Entity entity, float radius)
+		public Asteroid(Entity entity, RequestAsteroid req)
 		{
 			Entity = entity;
-			Radius = radius;
-			PhysicsBody = default;
+			
+			Radius = req.Radius;
+			PhysicsBody = req.PhysicsBody;
 		}
 	}
 }

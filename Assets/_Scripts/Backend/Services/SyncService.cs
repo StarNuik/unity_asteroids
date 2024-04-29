@@ -7,13 +7,14 @@ namespace Asteroids
 	{
 		public void PubUpdates()
 		{
-			Client.Pub(
-				PlayerDelta.ConstructFrom(State)
-			);
-						
 			foreach (var entity in State.PhysicsEntities)
 			{
-				Client.Pub<UpdatePhysicsEntity>(new(entity));
+				Client.Pub(new UpdatePhysicsEntity(entity));
+			}
+
+			foreach (var (_, actor) in State.Actors)
+			{
+				Client.Pub(new UpdateActor(actor));
 			}
 		}
 	}

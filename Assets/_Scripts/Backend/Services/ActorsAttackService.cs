@@ -7,14 +7,17 @@ using UnityEngine;
 
 namespace Asteroids
 {
-	public class PlayerAttackService : Service
+	public class ActorsAttackService : Service
 	{
-		public void Tick(Tick tick)
+		public void Tick()
 		{
-			PrimaryFire();
+			foreach (var (_, actor) in State.Actors)
+			{
+				PrimaryFire(actor);
+			}
 		}
 
-		private void PrimaryFire()
+		private void PrimaryFire(PlayerActor actor)
 		{
 			var input = State.PlayerInput;
 
@@ -26,15 +29,20 @@ namespace Asteroids
 				return;
 			
 			State.LastPrimaryFire = State.Tick;
-			Main.Pub(new RequestBullet() { PhysicsBody = BulletBody(), });
+			Main.Pub(new RequestBullet()
+				{
+					PhysicsBody = BulletBody(actor),
+					Tick = State.Tick,
+				}
+			);
 		}
 
-		private PhysicsBody BulletBody()
+		private PhysicsBody BulletBody(PlayerActor actor)
 		{
 			return new()
 			{
-				Position = State.PlayerPosition,
-				Velocity = State.PlayerDirection * Consts.PrimaryBulletSpeed,
+				Position = actor.PhysicsBody.Position,
+				Velocity = actor.Direction * Consts.PrimaryBulletSpeed,
 			};
 		}
 	}

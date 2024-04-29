@@ -11,13 +11,14 @@ namespace Asteroids
 		public int CreationTick { get; set; }
 		public PhysicsBody PhysicsBody { get; set; }
 
-		public Bullet(Entity entity, int creationTick, float radius)
+		public Bullet(Entity entity, RequestBullet req)
 		{
 			Entity = entity;
-			CreationTick = creationTick;
-			Radius = radius;
-			
-			PhysicsBody = default;
+
+			Radius = Consts.BulletRadius;
+
+			CreationTick = req.Tick;
+			PhysicsBody = req.PhysicsBody;
 		}
 	}
 }

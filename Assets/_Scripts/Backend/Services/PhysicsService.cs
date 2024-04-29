@@ -10,6 +10,7 @@ namespace Asteroids
 	{
 		public void Tick()
 		{
+			UpdateAll(State.Actors);
 			UpdateAll(State.Bullets);
 			UpdateAll(State.Asteroids);
 		}
@@ -18,9 +19,8 @@ namespace Asteroids
 			where T : IPhysicsBody
 		{
 			var entities = items.Keys.ToList();
-			for (int i = 0; i < entities.Count; i++)
+			foreach (var entity in entities)
 			{
-				var entity = entities[i];
 				var item = items[entity];
 				var from = item.PhysicsBody;
 				item.PhysicsBody = UpdateBody(from);
@@ -50,15 +50,5 @@ namespace Asteroids
 			body.Position = pos;
 			return body;
 		}
-
-		// private void Drag()
-		// {
-		// 	var vel = State.PlayerVelocity;
-		// 	var dir = vel.normalized;
-		// 	var len = vel.magnitude;
-
-		// 	var next = Mathf.Max(0f, len - Consts.WorldDrag * Consts.ServerDeltaTime);
-		// 	State.PlayerVelocity = dir * next;
-		// }
 	}
 }

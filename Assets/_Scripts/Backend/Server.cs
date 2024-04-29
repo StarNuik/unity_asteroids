@@ -26,6 +26,14 @@ namespace Asteroids
 			state = new();
 			services = new();
 
+			services.Inject(
+				state,
+				streamIn,
+				streamMain,
+				streamOut
+			);
+			services.Setup();
+
 			GameLoop();
 		}
 
@@ -36,13 +44,7 @@ namespace Asteroids
 
 		private async void GameLoop()
 		{
-			services.Inject(
-				state,
-				streamIn,
-				streamMain,
-				streamOut
-			);
-			services.Setup();
+			streamMain.Pub(new Init());
 
 			while (true)
 			{

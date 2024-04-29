@@ -39,34 +39,49 @@ namespace Asteroids
 			DeleteEntity(item.Entity);
 		}
 
-		public void NewAsteroid(RequestAsteroid req)
+		public void NewActor(RequestActor request) =>
+			NewConcrete(
+				(e, req) => new PlayerActor(e, req),
+				actor => new CreateActor() { Actor = actor, },
+				State.Actors,
+				request
+			);
+
+		public void NewAsteroid(RequestAsteroid request) =>
+			NewConcrete(
+				(e, req)  => new Asteroid(e, req),
+				asteroid => new CreateAsteroid() { Asteroid = asteroid, },
+				State.Asteroids,
+				request
+			);
+
+		public void NewBullet(RequestBullet request) =>
+			NewConcrete(
+				(e, req) => new Bullet(e, req),
+				bullet => new CreateBullet() { Bullet = bullet, },
+				State.Bullets,
+				request
+			);
+
+		// this is yucky, but so are deadlines
+		private void NewConcrete<TEntity, TRequest, TMessage>(
+			Func<Entity, TRequest, TEntity> newItem,
+			Func<TEntity, TMessage> newMessage,
+			Dictionary<Entity, TEntity> collection,
+			TRequest request
+		)
 		{
 			var entity = NewEntity();
-			var asteroid = new Asteroid(entity, req.Radius)
-			{
-				PhysicsBody = req.PhysicsBody,
-			};
+			var item = newItem(entity, request);
 
-			State.Asteroids.Add(entity, asteroid);
-			Client.Pub<CreateAsteroid>(new() { Asteroid = asteroid, });
-		}
-
-		public void NewBullet(RequestBullet req)
-		{
-			var entity = NewEntity();
-			var bullet = new Bullet(entity, State.Tick, Consts.BulletRadius)
-			{
-				PhysicsBody = req.PhysicsBody,
-			};
-
-			State.Bullets.Add(entity, bullet);
-			Client.Pub<CreateBullet>(new() { Bullet = bullet, });
+			collection.Add(entity, item);
+			Client.Pub(newMessage(item));
 		}
 
 		private void DeleteEntity(Entity entity)
 		{
 			State.Entities.Remove(entity);
-			Client.Pub<DeleteEntity>(new() { Entity = entity, });
+			Client.Pub(new DeleteEntity() { Entity = entity, });
 		}
 
 		private Entity NewEntity()
@@ -76,7 +91,7 @@ namespace Asteroids
 				candidate = new Entity(NextId());
 			
 			var entity = candidate;
-			Client.Pub<CreateEntity>(new() { Entity = entity, });
+			Client.Pub(new CreateEntity() { Entity = entity, });
 
 			return entity;
 		}
