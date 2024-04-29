@@ -19,19 +19,16 @@ namespace Asteroids
 		public int LastPrimaryFire = -Consts.PrimaryAttackCooldown;
 		public int NextAsteroid = Consts.AsteroidsTimerRange.y;
 
-		//todo: change to HashSet<>
-		public List<Entity> Entities = new();
-		//todo: change to Dictionary<>
-		public List<Bullet> Bullets = new();
-		//todo: change to Dictionary<>
-		public List<Asteroid> Asteroids = new();
+		public HashSet<Entity> Entities = new();
+		public Dictionary<Entity, Bullet> Bullets = new();
+		public Dictionary<Entity, Asteroid> Asteroids = new();
 
 		public IEnumerable<IPhysicsEntity> PhysicsEntities => ColliderEntities.Cast<IPhysicsEntity>();
 		
 		public IEnumerable<IColliderEntity> ColliderEntities => Bullets
-			.Select(bullet => bullet as IColliderEntity)
+			.Select(pair => pair.Value as IColliderEntity)
 			.Union(
-				Asteroids.Select(asteroid => asteroid as IColliderEntity)
+				Asteroids.Select(pair => pair.Value as IColliderEntity)
 			);
 
 		public List<Action> QueuedDeletes = new();

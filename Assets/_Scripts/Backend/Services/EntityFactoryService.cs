@@ -18,25 +18,23 @@ namespace Asteroids
 			State.QueuedDeletes.Clear();
 		}
 
-		public void QueueDelete<T>(List<T> stateList, T item)
+		public void QueueDelete<T>(Dictionary<Entity, T> stateCollection, T item)
 			where T : IEntity
 		{
 			State.QueuedDeletes.Add(() => {
 				if (!State.Entities.Contains(item.Entity))
 					return;
-				Delete(stateList, item);
+				Delete(stateCollection, item);
 			});
 		}
 
-		// `stateList` is yucky,
-		// but I don't want to spend time
-		// properly implementing components from ECS
-		private void Delete<T>(List<T> stateList, T item)
+		// `Dict<,T>` is yucky,
+		// but I don't want to spend time properly implementing the "Component" from "ECS"
+		private void Delete<T>(Dictionary<Entity, T> stateCollection, T item)
 			where T : IEntity
 		{
-			var idx = stateList.FindIndex(i => i.Entity == item.Entity);
-			Assert.IsTrue(idx >= 0);
-			stateList.RemoveAt(idx);
+			Assert.IsTrue(stateCollection.ContainsKey(item.Entity));
+			stateCollection.Remove(item.Entity);
 
 			DeleteEntity(item.Entity);
 		}
@@ -49,9 +47,8 @@ namespace Asteroids
 				PhysicsBody = req.PhysicsBody,
 			};
 
-			State.Asteroids.Add(asteroid);
+			State.Asteroids.Add(entity, asteroid);
 			Client.Pub<CreateAsteroid>(new() { Asteroid = asteroid, });
-			// return asteroid;
 		}
 
 		public void NewBullet(RequestBullet req)
@@ -62,36 +59,32 @@ namespace Asteroids
 				PhysicsBody = req.PhysicsBody,
 			};
 
-			State.Bullets.Add(bullet);
+			State.Bullets.Add(entity, bullet);
 			Client.Pub<CreateBullet>(new() { Bullet = bullet, });
-			// return bullet;
 		}
 
 		private void DeleteEntity(Entity entity)
 		{
-			var idx = State.Entities.FindIndex(e => e == entity);
-			State.Entities.RemoveAt(idx);
+			State.Entities.Remove(entity);
 			Client.Pub<DeleteEntity>(new() { Entity = entity, });
 		}
 
 		private Entity NewEntity()
 		{
-			var entity = new Entity(
-				NextId(State)
-			);
+			var candidate = new Entity(NextId());
+			while (!State.Entities.Add(candidate))
+				candidate = new Entity(NextId());
 			
-			State.Entities.Add(entity);
+			var entity = candidate;
 			Client.Pub<CreateEntity>(new() { Entity = entity, });
 
 			return entity;
 		}
 
-		private int NextId(SessionState state)
+		private int NextId()
 		{
-			var id = state.NextId;
-			//todo: int overflow
-			state.NextId += 1;
-
+			var id = State.NextId;
+			State.NextId = unchecked(State.NextId + 1);
 			return id;
 		}
 	}

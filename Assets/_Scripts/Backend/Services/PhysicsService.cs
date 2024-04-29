@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,15 +14,17 @@ namespace Asteroids
 			UpdateAll(State.Asteroids);
 		}
 
-		private void UpdateAll<T>(List<T> items)
+		private void UpdateAll<T>(Dictionary<Entity, T> items)
 			where T : IPhysicsBody
 		{
-			for (int i = 0; i < items.Count; i++)
+			var entities = items.Keys.ToList();
+			for (int i = 0; i < entities.Count; i++)
 			{
-				var item = items[i];
+				var entity = entities[i];
+				var item = items[entity];
 				var from = item.PhysicsBody;
 				item.PhysicsBody = UpdateBody(from);
-				items[i] = item;
+				items[entity] = item;
 			}
 		}
 

@@ -11,11 +11,7 @@ namespace Asteroids
 			Id = id;
 		}
 
-		// public bool Equals(Entity other)
-		// {
-		// 	return other.Id == this.Id;
-		// }
-		
+		// semantics
 		public static bool operator ==(Entity left, Entity right)
 		{
 			return left.Id.Equals(right.Id);
@@ -24,6 +20,16 @@ namespace Asteroids
 		public static bool operator !=(Entity left, Entity right)
 		{
 			return !left.Id.Equals(right.Id);
+		}
+
+		public override int GetHashCode()
+		{
+			return Id.GetHashCode();
+		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Entity && (Entity)obj == this;
 		}
 	}
 }

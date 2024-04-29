@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Asteroids
 {
 	public class BulletsTimeoutService : Service
 	{
-		private Action<List<Bullet>, Bullet> BulletDestructor;
+		private Action<Dictionary<Entity, Bullet>, Bullet> BulletDestructor;
 
-		public void Inject(Action<List<Bullet>, Bullet> bulletDestructor)
+		public void Inject(Action<Dictionary<Entity, Bullet>, Bullet> bulletDestructor)
 		{
 			BulletDestructor = bulletDestructor;
 		}
 
 		public void Tick()
 		{
-			var bullets = State.Bullets;
+			var bullets = State.Bullets.Values.ToList();
 			for (int i = bullets.Count - 1; i >= 0; i--)
 			{
 				var bullet = bullets[i];

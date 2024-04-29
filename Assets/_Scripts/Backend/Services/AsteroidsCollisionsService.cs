@@ -5,9 +5,9 @@ namespace Asteroids
 {
 	public class AsteroidsCollisionsService : Service
 	{
-		private Action<List<Asteroid>, Asteroid> AsteroidDestructor;
+		private Action<Dictionary<Entity, Asteroid>, Asteroid> AsteroidDestructor;
 
-		public void Inject(Action<List<Asteroid>, Asteroid> asteroidDestructor)
+		public void Inject(Action<Dictionary<Entity, Asteroid>, Asteroid> asteroidDestructor)
 		{
 			AsteroidDestructor = asteroidDestructor;
 		}
