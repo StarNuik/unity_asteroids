@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
 using Asteroids.Backend;
+using Asteroids.Lib;
 
 namespace Asteroids
 {
 	public class ServerServices : Service
 	{
+		private new IEventStream Main;
+		private ISubscribable Input;
+		private IPublisher Client;
+
 		private PlayerInputService playerInput = new();
 		private EntityFactoryService entityFactory = new();
 		private AsteroidTimedSpawnService asteroidTimedSpawn = new();
@@ -22,10 +27,23 @@ namespace Asteroids
 
 		private DebugSyncService debugSync = new();
 
+		public void Inject(
+			SessionState state,
+			PolledEventStream input,
+			IEventStream main,
+			IEventStream client)
+		{
+			base.Inject(state, main);
+
+			Main = main;
+			Input = input;
+			Client = client;
+
+			InjectChildren();
+		}
+
 		public void Setup()
 		{
-			InjectChildren();
-
 			Input.Sub<UpdateInput>(playerInput.ApplyInput);
 
 			Main.Sub<Init>(init.Init);
@@ -51,13 +69,19 @@ namespace Asteroids
 			Main.Sub<Sync>(sync.PubUpdates);
 			Main.Sub<DeleteEntity>(sync.Rebroadcast);
 			Main.Sub<UpdateHud>(sync.Rebroadcast);
+			Main.Sub<CreateActor>(sync.Rebroadcast);
+			Main.Sub<CreateAsteroid>(sync.Rebroadcast);
+			Main.Sub<CreateBullet>(sync.Rebroadcast);
+			Main.Sub<CreateMissile>(sync.Rebroadcast);
 		}
 
 		private void InjectChildren()
 		{
 			var services = new List<Service>() { score, init, debugSync, asteroidsCollisions, bulletsCollisions, collisions, bulletsTimeout, physics, actorsAttack, actorsControls, sync, playerInput, entityFactory, asteroidTimedSpawn, };
 
-			services.ForEach(s => s.Inject(State, Input, Main, Client));
+			services.ForEach(s => s.Inject(State, Main));
+
+			sync.Inject(Client);
 
 			bulletsTimeout.Inject(entityFactory.QueueDelete);
 			bulletsCollisions.Inject(entityFactory.QueueDelete);

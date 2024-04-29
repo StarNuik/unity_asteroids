@@ -11,7 +11,6 @@ namespace Asteroids
 			{
 				State.PlayerScore += Consts.AsteroidScore;
 				Main.Pub(new UpdateHud(State));
-				Debug.Log("[ PlayerScoreService.TryAddScore ] IsAsteroid");
 			}
 		}
 	}

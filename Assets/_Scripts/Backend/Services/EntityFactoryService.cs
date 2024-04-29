@@ -79,7 +79,7 @@ namespace Asteroids
 			var item = newItem(entity, request);
 
 			collection.Add(entity, item);
-			Client.Pub(newMessage(item));
+			Main.Pub(newMessage(item));
 		}
 
 		private void DeleteEntity(Entity entity)
@@ -94,7 +94,7 @@ namespace Asteroids
 				candidate = new Entity(NextId());
 			
 			var entity = candidate;
-			Client.Pub(new CreateEntity() { Entity = entity, });
+			Main.Pub(new CreateEntity() { Entity = entity, });
 
 			return entity;
 		}
