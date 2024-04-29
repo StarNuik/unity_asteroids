@@ -20,6 +20,8 @@ namespace Asteroids
 		private BulletsCollisionsService bulletsCollisions = new();
 		private AsteroidsCollisionsService asteroidsCollisions = new();
 
+		private DebugSyncService debugSync = new();
+
 		public void Setup()
 		{
 			InjectChildren();
@@ -42,13 +44,14 @@ namespace Asteroids
 
 			Main.Sub<FinishQueued>(entityFactory.FinishDeletes);
 
+			Main.Sub<Sync>(debugSync.PubDebug);
 			Main.Sub<Sync>(sync.PubUpdates);
 		}
 
 		private void InjectChildren()
 		{
 			var services = new List<Service>() {
-				asteroidsCollisions, bulletsCollisions, collisions, bulletsTimeout, physics, entityClamp, playerAttack, playerPhysics, playerControls, sync, deltaService, entityFactory, asteroidTimedSpawn,
+				debugSync, asteroidsCollisions, bulletsCollisions, collisions, bulletsTimeout, physics, entityClamp, playerAttack, playerPhysics, playerControls, sync, deltaService, entityFactory, asteroidTimedSpawn,
 			};
 
 			services.ForEach(s => s.Inject(State, Input, Main, Client));

@@ -3,10 +3,7 @@ using Editor = UnityEngine.SerializeField;
 
 namespace Asteroids
 {
-	public class AsteroidObject : MonoBehaviour, IClonedPhysicsBody
+	public class AsteroidObject : ColliderObject
 	{
-		public Vector3 Position {
-			set => transform.position = value;
-		}
 	}
 }

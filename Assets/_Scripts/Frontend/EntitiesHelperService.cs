@@ -7,35 +7,30 @@ namespace Asteroids
 {
 	public class EntitiesHelperService : MonoBehaviour
 	{
-		// is this bad? or, rather,
-		// how can i make this better, w/o too much effort
-		private FieldService field => Locator.Field;
-
 		public void NewEntity<TPrefab, TData>(Dictionary<Entity, TPrefab> collection, TData info, TPrefab prefab)
-			where TPrefab : MonoBehaviour, IClonedPhysicsBody
-			where TData : IPhysicsEntity
+			where TPrefab : ColliderObject
+			where TData : IColliderEntity
 		{
-			Assert.IsNotNull(field);
-
 			var instance = Object.Instantiate(prefab);
-			instance.Position = field.ToWorld(info.PhysicsBody.Position);
+			instance.Position = info.PhysicsBody.Position;
+			instance.Radius = info.Radius;
 
 			collection.Add(info.Entity, instance);
 		}
 
 		public void TryUpdateEntity<TPrefab>(Dictionary<Entity, TPrefab> collection, UpdatePhysicsEntity update)
-			where TPrefab : MonoBehaviour, IClonedPhysicsBody
+			where TPrefab : ColliderObject
 		{
 			var entity = update.Entity;
 			if (!collection.ContainsKey(entity))
 				return;
 			
 			var item = collection[entity];
-			item.Position = field.ToWorld(update.PhysicsBody.Position);
+			item.Position = update.PhysicsBody.Position;
 		}
 
 		public void TryDeleteEntity<TPrefab>(Dictionary<Entity, TPrefab> collection, DeleteEntity msg)
-			where TPrefab : MonoBehaviour, IClonedPhysicsBody
+			where TPrefab : ColliderObject
 		{
 			var entity = msg.Entity;
 			if (!collection.ContainsKey(entity))
