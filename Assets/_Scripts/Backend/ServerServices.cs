@@ -6,7 +6,7 @@ namespace Asteroids
 {
 	public class ServerServices : Service
 	{
-		private DeltaService deltaService = new();
+		private PlayerInputService playerInput = new();
 		private EntityFactoryService entityFactory = new();
 		private AsteroidTimedSpawnService asteroidTimedSpawn = new();
 		private SyncService sync = new();
@@ -27,7 +27,7 @@ namespace Asteroids
 
 			Main.Sub<Init>(init.Init);
 
-			Input.Sub<InputDelta>(deltaService.ApplyInput);
+			Input.Sub<UpdateInput>(playerInput.ApplyInput);
 
 			Main.Sub<Tick>(physics.Tick);
 			Main.Sub<Tick>(actorsControls.Tick);
@@ -51,7 +51,7 @@ namespace Asteroids
 
 		private void InjectChildren()
 		{
-			var services = new List<Service>() { init, debugSync, asteroidsCollisions, bulletsCollisions, collisions, bulletsTimeout, physics, actorsAttack, actorsControls, sync, deltaService, entityFactory, asteroidTimedSpawn, };
+			var services = new List<Service>() { init, debugSync, asteroidsCollisions, bulletsCollisions, collisions, bulletsTimeout, physics, actorsAttack, actorsControls, sync, playerInput, entityFactory, asteroidTimedSpawn, };
 
 			services.ForEach(s => s.Inject(State, Input, Main, Client));
 

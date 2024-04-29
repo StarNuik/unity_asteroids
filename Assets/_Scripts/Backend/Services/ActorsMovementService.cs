@@ -6,7 +6,7 @@ namespace Asteroids.Backend
 {
 	public class ActorsMovementService : Service
 	{
-		private new InputDelta Input => State.PlayerInput;
+		private new UpdateInput Input => State.PlayerInput;
 
 		public void Tick()
 		{

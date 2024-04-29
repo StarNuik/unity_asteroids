@@ -30,7 +30,7 @@ namespace Asteroids.Frontend
 
 		private void AssembleInputDelta(InputContext ctx)
 		{
-			var input = new InputDelta
+			var input = new UpdateInput
 			{
 				PrimaryFire = primaryFire.phase.IsInProgress(),
 				UltimateFire = ultimateFire.phase.IsInProgress(),

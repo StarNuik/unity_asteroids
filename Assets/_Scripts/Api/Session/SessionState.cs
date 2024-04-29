@@ -11,7 +11,7 @@ namespace Asteroids
 		public int Tick;
 		public int NextId = int.MinValue;
 
-		public InputDelta PlayerInput;
+		public UpdateInput PlayerInput;
 		
 		// public Vector2 PlayerPosition = Vector2.one * 0.5f;
 		// public Vector2 PlayerDirection = Vector2.right;

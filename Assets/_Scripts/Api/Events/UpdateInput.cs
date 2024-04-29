@@ -1,6 +1,6 @@
 namespace Asteroids
 {
-	public struct InputDelta : IStateDelta
+	public struct UpdateInput
 	{
 		public bool PrimaryFire;
 		public bool UltimateFire;
@@ -12,7 +12,7 @@ namespace Asteroids
 			state.PlayerInput = this;
 		}
 
-		public static InputDelta ConstructFrom(SessionState state)
+		public static UpdateInput ConstructFrom(SessionState state)
 		{
 			return state.PlayerInput;
 		}
