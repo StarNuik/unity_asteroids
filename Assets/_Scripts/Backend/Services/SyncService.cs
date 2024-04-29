@@ -17,5 +17,10 @@ namespace Asteroids
 				Client.Pub(new UpdateActor(actor));
 			}
 		}
+
+		public void Rebroadcast<T>(T msg)
+		{
+			Client.Pub(msg);
+		}
 	}
 }

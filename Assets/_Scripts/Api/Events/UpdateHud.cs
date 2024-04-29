@@ -2,8 +2,13 @@ using System;
 
 namespace Asteroids
 {
-	public struct UpdateUi
+	public struct UpdateHud
 	{
-		public int PlayerScore;
+		public int Score;
+
+		public UpdateHud(SessionState state)
+		{
+			Score = state.PlayerScore;
+		}
 	}
 }

@@ -22,8 +22,8 @@ namespace Asteroids
 			where T : IEntity
 		{
 			State.QueuedDeletes.Add(() => {
-				if (!State.Entities.Contains(item.Entity))
-					return;
+				// if (!State.Entities.Contains(item.Entity))
+				// 	return;
 				Delete(stateCollection, item);
 			});
 		}
@@ -34,8 +34,12 @@ namespace Asteroids
 			where T : IEntity
 		{
 			Assert.IsTrue(stateCollection.ContainsKey(item.Entity));
-			stateCollection.Remove(item.Entity);
 
+			//WARNING: the event is sent out BEFORE the entity is removed from the Set<>. MAY cause side effects
+			// this event fire location is highly dubious
+			Main.Pub(new DeleteEntity() { Entity = item.Entity, });
+
+			stateCollection.Remove(item.Entity);
 			DeleteEntity(item.Entity);
 		}
 
@@ -81,7 +85,6 @@ namespace Asteroids
 		private void DeleteEntity(Entity entity)
 		{
 			State.Entities.Remove(entity);
-			Client.Pub(new DeleteEntity() { Entity = entity, });
 		}
 
 		private Entity NewEntity()

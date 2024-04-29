@@ -19,9 +19,12 @@ namespace Asteroids
 				return;
 
 			if (msg.Other.Is<Asteroid>(State.Asteroids))
-			{
-				BulletDestructor(State.Bullets, bullet);
-			}
+				WithAsteroid(bullet);
+		}
+
+		private void WithAsteroid(Bullet bullet)
+		{
+			BulletDestructor(State.Bullets, bullet);
 		}
 	}
 }

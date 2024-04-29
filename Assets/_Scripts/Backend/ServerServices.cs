@@ -18,6 +18,7 @@ namespace Asteroids
 		private BulletsCollisionsService bulletsCollisions = new();
 		private AsteroidsCollisionsService asteroidsCollisions = new();
 		private InitService init = new();
+		private PlayerScoreService score = new();
 
 		private DebugSyncService debugSync = new();
 
@@ -25,9 +26,9 @@ namespace Asteroids
 		{
 			InjectChildren();
 
-			Main.Sub<Init>(init.Init);
-
 			Input.Sub<UpdateInput>(playerInput.ApplyInput);
+
+			Main.Sub<Init>(init.Init);
 
 			Main.Sub<Tick>(physics.Tick);
 			Main.Sub<Tick>(actorsControls.Tick);
@@ -42,16 +43,19 @@ namespace Asteroids
 			Main.Sub<RequestBullet>(entityFactory.NewBullet);
 			Main.Sub<Collision>(bulletsCollisions.TryCollision);
 			Main.Sub<Collision>(asteroidsCollisions.TryCollision);
+			Main.Sub<DeleteEntity>(score.TryAddScore);
 
 			Main.Sub<FinishQueued>(entityFactory.FinishDeletes);
 
 			Main.Sub<Sync>(debugSync.PubDebug);
 			Main.Sub<Sync>(sync.PubUpdates);
+			Main.Sub<DeleteEntity>(sync.Rebroadcast);
+			Main.Sub<UpdateHud>(sync.Rebroadcast);
 		}
 
 		private void InjectChildren()
 		{
-			var services = new List<Service>() { init, debugSync, asteroidsCollisions, bulletsCollisions, collisions, bulletsTimeout, physics, actorsAttack, actorsControls, sync, playerInput, entityFactory, asteroidTimedSpawn, };
+			var services = new List<Service>() { score, init, debugSync, asteroidsCollisions, bulletsCollisions, collisions, bulletsTimeout, physics, actorsAttack, actorsControls, sync, playerInput, entityFactory, asteroidTimedSpawn, };
 
 			services.ForEach(s => s.Inject(State, Input, Main, Client));
 

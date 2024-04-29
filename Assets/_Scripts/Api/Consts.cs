@@ -32,11 +32,11 @@ namespace Asteroids
 		);
 		public readonly static Vector2 AsteroidSpeedRange = new(.125f, .25f);
 		public readonly static Vector2 AsteroidSizeRange = new(.05f, .025f);
-		public const int AsteroidScore = 1;
+		public const int AsteroidScore = 10;
 
 		// Missile
 		public const float MissileSize = .02f;
-		// public const int MissileScore = 5;
+		// public const int MissileScore = 25;
 
 		//
 		private const float ticksPerSecond = 1000f / (float)ServerTickMs;
