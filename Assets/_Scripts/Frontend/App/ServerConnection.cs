@@ -15,7 +15,7 @@ namespace Asteroids.App
 
 		public bool IsEnabled
 		{
-			set => server.IsEnabled = value;
+			set => ClientOut.Pub(new UpdateServer() { IsSimEnabled = value, });
 		}
 
 		public void Poll()

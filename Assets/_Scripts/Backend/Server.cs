@@ -8,7 +8,7 @@ namespace Asteroids
 {
 	public class Server
 	{
-		public bool IsEnabled { get; set; }
+		private bool IsSimEnabled { get; set; }
 
 		private PolledEventStream streamIn;
 		private IEventStream streamMain;
@@ -34,7 +34,14 @@ namespace Asteroids
 			);
 			services.Setup();
 
+			streamIn.Sub<UpdateServer>(Reconfig);
+
 			GameLoop();
+		}
+
+		private void Reconfig(UpdateServer update)
+		{
+			IsSimEnabled = update.IsSimEnabled;
 		}
 
 		public (IPublisher miso, PolledEventStream mosi) Connect()
@@ -50,7 +57,7 @@ namespace Asteroids
 			{
 				streamIn.Poll();
 
-				if (IsEnabled)
+				if (IsSimEnabled)
 				{
 					streamMain.Pub(new Tick());
 					streamMain.Pub(new FinishQueued());
