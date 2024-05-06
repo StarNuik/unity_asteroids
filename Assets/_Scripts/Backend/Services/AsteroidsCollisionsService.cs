@@ -3,27 +3,21 @@ using System.Collections.Generic;
 
 namespace Asteroids
 {
-	public class AsteroidsCollisionsService : Service
+	public class AsteroidsCollisionsService : EntityCollisionService<Asteroid>
 	{
-		private Action<Dictionary<Entity, Asteroid>, Asteroid> AsteroidDestructor;
+		protected override Dictionary<Entity, Asteroid> Entities => State.Asteroids;
 
-		public void Inject(Action<Dictionary<Entity, Asteroid>, Asteroid> asteroidDestructor)
+		protected override void ProcessCollision(Asteroid who, Entity other)
 		{
-			AsteroidDestructor = asteroidDestructor;
-		}
-		
-		public void TryCollision(Collision msg)
-		{
-			if (!msg.Entity.Is<Asteroid>(State.Asteroids, out var asteroid))
-				return;
-			
-			if (msg.Other.Is<Bullet>(State.Bullets))
-				WithBullet(asteroid);
-		}
+			if (other.Is(State.Bullets))
+			{
+				Destroy(who);
+			}
 
-		private void WithBullet(Asteroid asteroid)
-		{
-			AsteroidDestructor(State.Asteroids, asteroid);
+			if (other.Is(State.Actors))
+			{
+				Destroy(who);
+			}
 		}
 	}
 }

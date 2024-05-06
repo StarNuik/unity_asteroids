@@ -3,7 +3,7 @@ using Editor = UnityEngine.SerializeField;
 
 namespace Asteroids
 {
-	public class MissileObject : MonoBehaviour
+	public class MissileObject : ColliderObject
 	{
 	}
 }

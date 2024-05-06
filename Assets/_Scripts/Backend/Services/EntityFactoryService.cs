@@ -43,6 +43,14 @@ namespace Asteroids
 			DeleteEntity(item.Entity);
 		}
 
+		public void NewMissile(RequestMissile request) =>
+			NewConcrete(
+				(e, req) => new Missile(e, req),
+				missile => new CreateMissile { Missile = missile, },
+				State.Missiles,
+				request
+			);
+
 		public void NewActor(RequestActor request) =>
 			NewConcrete(
 				(e, req) => new PlayerActor(e, req),

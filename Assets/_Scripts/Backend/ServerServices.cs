@@ -13,7 +13,6 @@ namespace Asteroids
 
 		private PlayerInputService playerInput = new();
 		private EntityFactoryService entityFactory = new();
-		private AsteroidTimedSpawnService asteroidTimedSpawn = new();
 		private SyncService sync = new();
 		private ActorsMovementService actorsControls = new();
 		private ActorsAttackService actorsAttack = new();
@@ -24,6 +23,10 @@ namespace Asteroids
 		private AsteroidsCollisionsService asteroidsCollisions = new();
 		private InitService init = new();
 		private PlayerScoreService score = new();
+		private ObjectsSpawnTimeService objectsSpawnTime = new();
+		private ObjectsSpawnPropsService objectsSpawnProps = new();
+		private MissilesMovementService missilesMovement = new();
+		private MissilesCollisionsService missilesCollisions = new();
 
 		private DebugSyncService debugSync = new();
 
@@ -51,17 +54,22 @@ namespace Asteroids
 			Main.Sub<Tick>(physics.Tick);
 			Main.Sub<Tick>(actorsControls.Tick);
 			Main.Sub<Tick>(actorsAttack.Tick);
-			Main.Sub<Tick>(asteroidTimedSpawn.Tick);
 			Main.Sub<Tick>(bulletsTimeout.Tick);
 			Main.Sub<Tick>(collisions.Tick);
+			Main.Sub<Tick>(objectsSpawnTime.Tick);
+			Main.Sub<Tick>(missilesMovement.Tick);
 
 			// subtick
 			Main.Sub<RequestActor>(entityFactory.NewActor);
 			Main.Sub<RequestAsteroid>(entityFactory.NewAsteroid);
 			Main.Sub<RequestBullet>(entityFactory.NewBullet);
+			Main.Sub<RequestMissile>(entityFactory.NewMissile);
 			Main.Sub<Collision>(bulletsCollisions.TryCollision);
 			Main.Sub<Collision>(asteroidsCollisions.TryCollision);
+			Main.Sub<Collision>(missilesCollisions.TryCollision);
 			Main.Sub<DeleteEntity>(score.TryAddScore);
+			Main.Sub<TimeForAsteroid>(objectsSpawnProps.PrepareAsteroid);
+			Main.Sub<TimeForMissile>(objectsSpawnProps.PrepareMissile);
 
 			Main.Sub<FinishQueued>(entityFactory.FinishDeletes);
 
@@ -77,7 +85,7 @@ namespace Asteroids
 
 		private void InjectChildren()
 		{
-			var services = new List<Service>() { score, init, debugSync, asteroidsCollisions, bulletsCollisions, collisions, bulletsTimeout, physics, actorsAttack, actorsControls, sync, playerInput, entityFactory, asteroidTimedSpawn, };
+			var services = new List<Service>() { missilesCollisions, missilesMovement, objectsSpawnProps, objectsSpawnTime, score, init, debugSync, asteroidsCollisions, bulletsCollisions, collisions, bulletsTimeout, physics, actorsAttack, actorsControls, sync, playerInput, entityFactory, };
 
 			services.ForEach(s => s.Inject(State, Main));
 
@@ -86,6 +94,7 @@ namespace Asteroids
 			bulletsTimeout.Inject(entityFactory.QueueDelete);
 			bulletsCollisions.Inject(entityFactory.QueueDelete);
 			asteroidsCollisions.Inject(entityFactory.QueueDelete);
+			missilesCollisions.Inject(entityFactory.QueueDelete);
 		}
 	}
 }

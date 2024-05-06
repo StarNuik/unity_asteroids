@@ -755,6 +755,7 @@ Transform:
   - {fileID: 847241150}
   - {fileID: 1139536720}
   - {fileID: 284696061}
+  - {fileID: 1185499177}
   m_Father: {fileID: 134796010}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &957247498
@@ -846,6 +847,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 6282728694982729800, guid: 7c67e0e129284f44ca9c4b98d050ee59, type: 3}
+--- !u!1 &1185499176
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1185499177}
+  - component: {fileID: 1185499178}
+  m_Layer: 0
+  m_Name: Missiles Lifetime
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1185499177
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1185499176}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 957018267}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1185499178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1185499176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d742ba108f7a924448f1098559b981d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  missilePrefab: {fileID: 7496252885043550320, guid: c02825b26cf2e0a4d9bce573743ec7a7, type: 3}
 --- !u!1 &1216249511
 GameObject:
   m_ObjectHideFlags: 0

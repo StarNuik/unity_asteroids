@@ -13,6 +13,7 @@ namespace Asteroids
 			UpdateAll(State.Actors);
 			UpdateAll(State.Bullets);
 			UpdateAll(State.Asteroids);
+			UpdateAll(State.Missiles);
 		}
 
 		private void UpdateAll<T>(Dictionary<Entity, T> items)

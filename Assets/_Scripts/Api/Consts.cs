@@ -35,8 +35,11 @@ namespace Asteroids
 		public const int AsteroidScore = 10;
 
 		// Missile
-		public const float MissileSize = .02f;
-		// public const int MissileScore = 25;
+		public const int MissileSpawnScoreDelta = MissileScore * 3;
+		public const float MissileSize = .035f;
+		public const float MissileTopSpeed = 0.15f;
+		public const float MissileVelocityLerpFactor = 0.05f;
+		public const int MissileScore = 25;
 
 		//
 		private const float ticksPerSecond = 1000f / (float)ServerTickMs;

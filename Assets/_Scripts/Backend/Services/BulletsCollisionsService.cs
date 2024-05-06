@@ -4,27 +4,21 @@ using System.Linq;
 
 namespace Asteroids
 {
-	public class BulletsCollisionsService : Service
+	public class BulletsCollisionsService : EntityCollisionService<Bullet>
 	{
-		private Action<Dictionary<Entity, Bullet>, Bullet> BulletDestructor;
+		protected override Dictionary<Entity, Bullet> Entities => State.Bullets;
 
-		public void Inject(Action<Dictionary<Entity, Bullet>, Bullet> bulletDestructor)
+		protected override void ProcessCollision(Bullet who, Entity other)
 		{
-			BulletDestructor = bulletDestructor;
-		}
+			if (other.Is(State.Asteroids))
+			{
+				Destroy(who);
+			}
 
-		public void TryCollision(Collision msg)
-		{
-			if (!msg.Entity.Is<Bullet>(State.Bullets, out var bullet))
-				return;
-
-			if (msg.Other.Is<Asteroid>(State.Asteroids))
-				WithAsteroid(bullet);
-		}
-
-		private void WithAsteroid(Bullet bullet)
-		{
-			BulletDestructor(State.Bullets, bullet);
+			if (other.Is(State.Missiles))
+			{
+				Destroy(who);
+			}
 		}
 	}
 }
